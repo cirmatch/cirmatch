@@ -39,7 +39,7 @@ app.use(cors({
   origin: function (origin, callback) {
     const allowedOrigins = [
       "https://cirmatch.com",
-      "cirmatch.vercel.app",
+      "https://cirmatch.vercel.app",
       "http://localhost:3000"
     ];
     if (!origin || allowedOrigins.includes(origin)) {
