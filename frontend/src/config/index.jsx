@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAccessToken, storeTokens, clearTokens } from "@/utils/tokenHelper";
 
-export const BASE_URL = "http://localhost:5000/api/v1";
+export const BASE_URL = "https://cirmatch.onrender.com/api/v1";
 
 export const client = axios.create({
   baseURL: BASE_URL,
