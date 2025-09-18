@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAccessToken, storeTokens, clearTokens } from "@/utils/tokenHelper";
 
-export const BASE_URL = "https://cirmatch.onrender.com/api/v1";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const client = axios.create({
   baseURL: BASE_URL,
@@ -36,19 +36,14 @@ client.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-
         const refreshResponse = await axios.post(`${BASE_URL}/refresh-token`, {}, { withCredentials: true });
-
         const { accessToken } = refreshResponse.data;
 
-
         storeTokens(accessToken);
-
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return client(originalRequest);
       } catch (refreshError) {
-
         clearTokens();
         window.location.href = "/auth"; 
         return Promise.reject(refreshError);
