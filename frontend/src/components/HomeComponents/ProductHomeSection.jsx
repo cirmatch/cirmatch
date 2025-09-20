@@ -1,35 +1,49 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
-import { motion } from 'framer-motion';
-import { fadeIn } from '@/utils/motion';
-import ButtonLink from '../Button/button';
+// components/HomeComponents/ProductHomeSection.jsx
 
-import ListingCard from '@/components/Product/listingCard';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import { motion } from "framer-motion";
+import { fadeIn } from "@/utils/motion";
+import ButtonLink from "../Button/button";
+import ListingCard from "@/components/Product/listingCard";
 
+/**
+ * ProductHomeSection Component
+ * 
+ * Displays a horizontal carousel of products using Swiper.
+ * Includes a heading, "View All" button, and custom navigation arrows.
+ * Filters out only confirmed products and renders ListingCards inside SwiperSlides.
+ * 
+ * Props:
+ * - product: array of product listings
+ * - category: string representing the category name
+ */
 const ProductHomeSection = ({ product = [], category }) => {
+  // Filter only confirmed products
   const confirmedProducts = product.filter((listing) => listing.Status === "confirmed");
 
-  // Hide entire section if no confirmed products
+  // Return null if no confirmed products exist
   if (confirmedProducts.length === 0) return null;
 
   return (
     <section id="product-slider" className="py-16 px-4 max-w-7xl mx-auto">
-      {/* Heading and View All */}
+      {/* Heading and View All Button */}
       <motion.div
-        variants={fadeIn('up', 0.3)}
+        variants={fadeIn("up", 0.3)}
         initial="hidden"
         whileInView="show"
         className="flex justify-between mb-12 py-2"
       >
         <motion.p
-          variants={fadeIn('up', 0.4)}
+          variants={fadeIn("up", 0.4)}
           className="text-teal-500 text-3xl font-bold tracking-wide select-none"
         >
           {category.toUpperCase()}
         </motion.p>
+
         <ButtonLink
           href={`/search?q=${category}`}
           bgColor="white"
@@ -41,16 +55,16 @@ const ProductHomeSection = ({ product = [], category }) => {
         </ButtonLink>
       </motion.div>
 
-      {/* Swiper with arrows */}
+      {/* Swiper Carousel with Custom Navigation Arrows */}
       <motion.div
-        variants={fadeIn('up', 0.5)}
+        variants={fadeIn("up", 0.5)}
         initial="hidden"
         whileInView="show"
         className="relative flex items-center justify-between gap-4"
       >
-        {/* Left Arrow */}
+        {/* Left Navigation Arrow */}
         <motion.button
-          variants={fadeIn('right', 0.6)}
+          variants={fadeIn("right", 0.6)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="swiper-button-prev-custom w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
@@ -58,13 +72,13 @@ const ProductHomeSection = ({ product = [], category }) => {
           <BsChevronLeft className="w-6 h-6" />
         </motion.button>
 
-        {/* Swiper itself */}
+        {/* Swiper Carousel */}
         <Swiper
           modules={[Navigation]}
           spaceBetween={30}
           navigation={{
-            nextEl: '.swiper-button-next-custom',
-            prevEl: '.swiper-button-prev-custom',
+            nextEl: ".swiper-button-next-custom",
+            prevEl: ".swiper-button-prev-custom",
           }}
           breakpoints={{
             0: { slidesPerView: 1 },
@@ -74,20 +88,23 @@ const ProductHomeSection = ({ product = [], category }) => {
           className="product-swiper w-full"
         >
           {confirmedProducts.map((listing, index) => (
-            <SwiperSlide key={listing._id} className="h-full">
+            <SwiperSlide key={listing._id} className="h-full flex justify-center">
               <motion.div
-                variants={fadeIn('up', 0.3 * (index + 1))}
-                className="h-full"
+                variants={fadeIn("up", 0.3 * (index + 1))}
+                className="h-full w-full flex justify-center"
               >
-                <ListingCard listing={listing} index={index} />
+                {/* Ensure ListingCard fills the slide */}
+                <div className="w-full sm:w-full md:w-full lg:w-full">
+                  <ListingCard listing={listing} index={index} fullWidth />
+                </div>
               </motion.div>
             </SwiperSlide>
           ))}
         </Swiper>
 
-        {/* Right Arrow */}
+        {/* Right Navigation Arrow */}
         <motion.button
-          variants={fadeIn('left', 0.6)}
+          variants={fadeIn("left", 0.6)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="swiper-button-next-custom w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
