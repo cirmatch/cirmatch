@@ -81,8 +81,6 @@ const SingleProductDetail = () => {
 
   return (
     <UserLayout>
-      {/* Toaster for notifications */}
-      <Toaster position="top-right" />
 
       <motion.div
         variants={{}}

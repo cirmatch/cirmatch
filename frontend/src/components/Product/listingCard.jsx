@@ -16,7 +16,7 @@ import { fadeIn } from "@/utils/motion";
  * - listing: object containing listing details (title, description, price, quantity, images)
  * - index: number used for staggered animation
  */
-const ListingCard = ({ listing, index }) => {
+const ListingCard = ({ listing, index, fullWidth }) => {
   // Extract quantity and unit from listing.quantity (e.g., "10 Kg" -> number=10, unit=Kg)
   const quan = listing?.quantity || ""; 
   const match = quan.match(/^(\d+(\.\d+)?)\s*(Kg|Mt)$/i);
@@ -31,7 +31,7 @@ const ListingCard = ({ listing, index }) => {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}
-      className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] p-2"
+      className={fullWidth ? "w-full p-2" : "w-full sm:w-[45%] md:w-[30%] lg:w-[22%] p-2"}
     >
       <Link
         href={`/product/${listing._id}`}
