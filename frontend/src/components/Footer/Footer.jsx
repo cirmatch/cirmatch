@@ -57,7 +57,7 @@ const Footer = () => {
               © {new Date().getFullYear()} cirmatch.com — All rights reserved.
             </motion.p>
             <motion.p variants={floatIn(1.1)}>
-              Created by Tanim Talukdar
+              Cirmatch Team
             </motion.p>
           </div>
         </motion.div>
