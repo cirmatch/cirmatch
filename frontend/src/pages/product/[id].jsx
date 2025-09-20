@@ -13,7 +13,7 @@ import { addCart } from "@/config/redux/action/cartAction";
 
 import ProductHomeSection from "@/components/HomeComponents/ProductHomeSection";
 import { ProductInfo } from "@/components/Product/ProductInfo";
-import { ProductImages } from "@/components/Product/ProductImages";
+import { ProductImages } from "@/components/Product/ProductImage";
 import { NotFound } from "@/components/NotFound";
 
 /**
