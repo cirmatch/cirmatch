@@ -3,14 +3,22 @@ import Listing from "../models/listing.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-// ✅ Helper: remove undefined fields
+/**
+ * 🔹 Helper: Remove undefined fields from an object
+ * Ensures only defined fields are sent in update queries.
+ */
 const cleanFields = (obj) =>
   Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined));
 
-const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled"];
+/**
+ * ✅ Allowed status values for listings
+ */
+const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled", "out_of_stock"];
 
-
-// ✅ Get all listings (paginated)
+/**
+ * 📝 Get all listings (paginated)
+ * Supports query parameters: page & limit
+ */
 export const getAlllisting = async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(100, parseInt(req.query.limit) || 10);
@@ -29,7 +37,10 @@ export const getAlllisting = async (req, res) => {
   });
 };
 
-// ✅ Get listing by ID
+/**
+ * 📝 Get listing by ID
+ * @param {string} id - Listing ID from req.params
+ */
 export const getListingDetail = async (req, res) => {
   const listing = await Listing.findById(req.params.id).lean();
 
@@ -37,10 +48,14 @@ export const getListingDetail = async (req, res) => {
     return res
       .status(httpStatus.NOT_FOUND)
       .json({ message: "Listing not found" });
+
   res.status(httpStatus.OK).json(listing);
 };
 
-// ✅ Create new listing (supports 1–5 images)
+/**
+ * 🆕 Create a new listing
+ * Supports uploading 1–5 images
+ */
 export const newListing = async (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res
@@ -61,7 +76,7 @@ export const newListing = async (req, res) => {
     washingProcess,
   } = req.body;
 
-  // Map uploaded images
+  // Map uploaded images to array
   const images = req.files.map((file) => ({
     path: file.path,
     filename: file.filename,
@@ -78,8 +93,8 @@ export const newListing = async (req, res) => {
     sourcingCondition,
     color,
     washingProcess,
-    images, // ✅ now array of images
-    author: req.user._id,
+    images,
+    author: req.user._id, // Set author from authenticated user
   });
 
   await newItem.save();
@@ -90,7 +105,10 @@ export const newListing = async (req, res) => {
   });
 };
 
-// ✅ Search listings
+/**
+ * 🔍 Search listings by text query
+ * @query {string} q - Search term
+ */
 export const search = async (req, res) => {
   const q = req.query.q?.trim();
   if (!q)
@@ -102,15 +120,22 @@ export const search = async (req, res) => {
   res.status(httpStatus.OK).json(results);
 };
 
-// ✅ Delete a listing
+/**
+ * ❌ Delete a listing by ID
+ * @param {string} productId - Listing ID from req.params
+ */
 export const deleteProduct = async (req, res) => {
   const deleted = await Listing.findByIdAndDelete(req.params.productId);
   if (!deleted)
-    return res.status(404).json({ message: "Listing not found" });
-  res.status(200).json({ message: "Listing deleted successfully" });
+    return res.status(httpStatus.NOT_FOUND).json({ message: "Listing not found" });
+
+  res.status(httpStatus.OK).json({ message: "Listing deleted successfully" });
 };
 
-// ✅ Edit/update listing (supports replacing up to 5 images)
+/**
+ * ✏️ Edit/update a listing
+ * Supports replacing up to 5 images
+ */
 export const editListing = async (req, res) => {
   const {
     title,
@@ -138,6 +163,7 @@ export const editListing = async (req, res) => {
     washingProcess,
   });
 
+  // Replace images if new files uploaded
   if (req.files && req.files.length > 0) {
     updatedFields.images = req.files.map((file) => ({
       path: file.path,
@@ -152,31 +178,36 @@ export const editListing = async (req, res) => {
   );
 
   if (!updated)
-    return res.status(404).json({ message: "Listing not found" });
+    return res.status(httpStatus.NOT_FOUND).json({ message: "Listing not found" });
 
-  res.status(200).json({
+  res.status(httpStatus.OK).json({
     message: "Listing updated successfully",
     listing: updated,
   });
 };
 
-// ========== ADMIN: UPDATE POST STATUS ==========
+/**
+ * 🛠️ Admin: Update listing status
+ * @param {string} PostId - Listing ID
+ * @body {string} status - New status (must be in ALLOWED_STATUSES)
+ */
 export const updatePostStatus = async (req, res) => {
   const { PostId } = req.params;
   const { status } = req.body;
 
   if (!ALLOWED_STATUSES.includes(status)) {
-    return res.status(400).json({ error: 'Invalid listing status value.' });
+    return res.status(httpStatus.BAD_REQUEST).json({ error: "Invalid listing status value." });
   }
 
-const listing = await Listing.findByIdAndUpdate(
-  PostId,
-  { Status: status },  // <-- Match the capitalization
-  { new: true }
-);
+  const listing = await Listing.findByIdAndUpdate(
+    PostId,
+    { Status: status }, // Ensure matching capitalization in DB
+    { new: true }
+  );
+
   if (!listing) {
-    return res.status(404).json({ error: 'Listing not found.' });
+    return res.status(httpStatus.NOT_FOUND).json({ error: "Listing not found." });
   }
 
-  res.status(200).json({ message: 'Listing status updated.', listing });
+  res.status(httpStatus.OK).json({ message: "Listing status updated.", listing });
 };

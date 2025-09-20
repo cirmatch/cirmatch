@@ -25,7 +25,7 @@ export const getOrderDetail = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
-
+  
   if (!ALLOWED_STATUSES.includes(status)) return res.status(400).json({ error: 'Invalid order status value.' });
 
   const order = await Order.findByIdAndUpdate(orderId, { status }, { new: true });

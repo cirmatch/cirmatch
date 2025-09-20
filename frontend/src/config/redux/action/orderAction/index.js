@@ -1,23 +1,32 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { client } from "@/config";
 
-// 🔁 Reusable error handler
+/**
+ * 🔁 Reusable error handler
+ * Extracts a meaningful error message from Axios error objects.
+ * Supports backend custom messages, HTTP status codes, and network errors.
+ */
 const extractErrorMessage = (error) => {
   if (error?.response?.data?.message) {
-    return error.response.data.message; // Backend custom message
+    return error.response.data.message; // Custom backend message
   }
   if (error?.response?.data?.error) {
-    return error.response.data.error;   // Alternative error field
+    return error.response.data.error;   // Alternative backend error field
   }
   if (error?.response?.status) {
-    return `Request failed with status ${error.response.status}`;
+    return `Request failed with status ${error.response.status}`; // HTTP status fallback
   }
   if (error?.message) {
-    return error.message; // e.g. "Network Error"
+    return error.message; // Generic error, e.g., network issues
   }
-  return "Unknown error occurred";
+  return "Unknown error occurred"; // Fallback message
 };
-// 🆕 Create a new order
+
+/**
+ * 🆕 Create a new order
+ * @param {object} orderData - Payload containing order details
+ * Dispatches async request to backend to create an order.
+ */
 export const createOrder = createAsyncThunk(
   "Order/createOrder",
   async (orderData, thunkApi) => {
@@ -30,7 +39,11 @@ export const createOrder = createAsyncThunk(
   }
 );
 
-// 🙋‍♂️ Get orders for the logged-in user
+/**
+ * 🙋‍♂️ Get details of a specific order
+ * @param {string} orderId - ID of the order
+ * Fetches order details for a logged-in user.
+ */
 export const getOrderDetail = createAsyncThunk(
   "Order/getOrderDetail",
   async (orderId, thunkApi) => {
@@ -43,8 +56,10 @@ export const getOrderDetail = createAsyncThunk(
   }
 );
 
-
-// 🛠️ Admin: Get all orders
+/**
+ * 🛠️ Admin: Get all orders
+ * Fetches a list of all orders from the backend (Admin only).
+ */
 export const getAllOrders = createAsyncThunk(
   "Order/getAllOrders",
   async (_, thunkApi) => {
@@ -57,12 +72,16 @@ export const getAllOrders = createAsyncThunk(
   }
 );
 
-// 📝 Admin: Update order status
+/**
+ * 📝 Admin: Update order status
+ * @param {object} payload - Contains orderId and status
+ * Updates the status of a specific order (Admin only).
+ */
 export const updateOrderStatus = createAsyncThunk(
   "Order/updateOrderStatus",
   async ({ orderId, status }, thunkApi) => {
     try {
-      const response = await client.patch(`/${orderId}/status`, { status });
+      const response = await client.patch(`/orders/${orderId}/status`, { status });
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       return thunkApi.rejectWithValue(extractErrorMessage(error));
@@ -70,7 +89,11 @@ export const updateOrderStatus = createAsyncThunk(
   }
 );
 
-// 🗑️ User: Delete order
+/**
+ * 🗑️ User: Delete an order
+ * @param {string} orderId - ID of the order
+ * Allows a user to delete their own order.
+ */
 export const deleteOrderByUser = createAsyncThunk(
   "Order/deleteOrderByUser",
   async (orderId, thunkApi) => {
@@ -83,7 +106,11 @@ export const deleteOrderByUser = createAsyncThunk(
   }
 );
 
-// ✏️ User: Update order
+/**
+ * ✏️ User: Update an order
+ * @param {object} payload - Contains orderId and updated orderData
+ * Allows a user to update their own order details.
+ */
 export const updateOrderByUser = createAsyncThunk(
   "Order/updateOrderByUser",
   async ({ orderId, orderData }, thunkApi) => {
@@ -96,12 +123,15 @@ export const updateOrderByUser = createAsyncThunk(
   }
 );
 
-// 🙋‍♂️ User: Get all orders of logged-in user
+/**
+ * 🙋‍♂️ User: Get all orders for logged-in user
+ * Fetches all orders associated with the currently authenticated user.
+ */
 export const getUserOrders = createAsyncThunk(
   "Order/getUserOrders",
   async (_, thunkApi) => {
     try {
-      const response = await client.get("/myorders"); // your backend route
+      const response = await client.get("/myorders"); // Backend route for user's orders
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       return thunkApi.rejectWithValue(
