@@ -1,11 +1,25 @@
+// components/Product/ProductImages.jsx
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+/**
+ * ProductImages Component
+ * 
+ * Displays a product's images with a main image and clickable thumbnails.
+ * Supports up to 5 images. Clicking a thumbnail updates the main image.
+ * Includes smooth fade-in animation for main image transitions.
+ * 
+ * Props:
+ * - images: Array of image objects ({ path: string })
+ * - title: String for alt text purposes
+ */
 export function ProductImages({ images = [], title }) {
-  const imgs = images.slice(0, 5); // max 5 images
-  const [mainIndex, setMainIndex] = useState(0);
+  const imgs = images.slice(0, 5); // Limit to maximum 5 images
+  const [mainIndex, setMainIndex] = useState(0); // Current main image index
 
+  // Handle case when no images are available
   if (imgs.length === 0) {
     return <div className="text-center text-gray-500">No images available</div>;
   }
@@ -26,10 +40,10 @@ export function ProductImages({ images = [], title }) {
         {imgs.map((img, idx) => (
           <div
             key={img.path}
-            onClick={() => setMainIndex(idx)}
+            onClick={() => setMainIndex(idx)} // Update main image on click
             className={`relative cursor-pointer rounded-md border-2 transition-all
               ${idx === mainIndex
-                ? "border-teal-600 scale-110 shadow-lg"
+                ? "border-teal-600 scale-110 shadow-lg" // Highlight selected thumbnail
                 : "border-transparent hover:opacity-75"}
               w-20 h-24 md:w-20 md:h-20 flex-shrink-0`}
           >
@@ -43,10 +57,10 @@ export function ProductImages({ images = [], title }) {
         ))}
       </div>
 
-      {/* Main big image */}
+      {/* Main Big Image */}
       <div className="relative flex-grow w-full h-[400px] md:h-[600px] min-w-0">
         <motion.div
-          key={imgs[mainIndex].path}
+          key={imgs[mainIndex].path} // Animate when main image changes
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}

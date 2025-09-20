@@ -43,7 +43,7 @@ export const addReview = async (req, res) => {
   });
   await newReview.save();
   product.review.push(newReview._id);
-  fullUser.reviewedPost.push(newReview._id);;
+  fullUser.reviewedPost.push(newReview._id);
   await fullUser.save();
   await product.save();
 
