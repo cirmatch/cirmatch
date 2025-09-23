@@ -13,11 +13,17 @@ const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled"];
 // ✅ Get all listings (paginated)
 export const getAlllisting = async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
-  const limit = Math.min(100, parseInt(req.query.limit) || 10);
-  const skip = (page - 1) * limit;
+  const limit = parseInt(req.query.limit) || 0;
+  const skip = (page - 1) * (limit || 0);
+
+  const query = Listing.find();
+
+  if (limit > 0) {
+    query.skip(skip).limit(limit);
+  }
 
   const [listings, totalCount] = await Promise.all([
-    Listing.find().skip(skip).limit(limit).lean(),
+    query.lean(),
     Listing.countDocuments(),
   ]);
 
@@ -25,7 +31,7 @@ export const getAlllisting = async (req, res) => {
     data: listings,
     total: totalCount,
     page,
-    totalPages: Math.ceil(totalCount / limit),
+    totalPages: limit > 0 ? Math.ceil(totalCount / limit) : 1,
   });
 };
 

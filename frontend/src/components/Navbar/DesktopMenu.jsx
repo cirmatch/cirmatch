@@ -67,7 +67,7 @@ const DesktopMenu = () => {
               border="1px solid #009688"
               hoverText="white"
             >
-              Login
+              Log In
             </ButtonLink>
 
             <ButtonLink
@@ -77,7 +77,7 @@ const DesktopMenu = () => {
               border="1px solid #009688"
               hoverText="white"
             >
-              Signup
+              Register
             </ButtonLink>
           </div>
         )}

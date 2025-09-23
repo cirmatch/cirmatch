@@ -25,7 +25,7 @@ export const productDetail = createAsyncThunk(
   async (productId, thunkApi) => {
     try {
       const response = await client.get(`/getAllListings/${productId}`);
-      const relatedResponse = await client.get(`/getAllListings/search?q=${response.data.title}`);
+      const relatedResponse = await client.get(`/getAllListings/search?q=${response.data.plastictype}`);
 
       return thunkApi.fulfillWithValue({
         product: response.data,

@@ -8,12 +8,13 @@ import { getAllListing } from "@/config/redux/action/productAction";
 import { fadeIn, textVariant } from "@/utils/motion";
 import UserLayout from "@/layout/clienLayout/UserLayout";
 import Loading from "@/components/Loading";
-import ListingCard from "@/components/Product/listingCard";
+import ProductHomeSection from "@/components/HomeComponents/ProductHomeSection";
+
 
 /**
  * Listing Component
  * 
- * Fetches and displays all confirmed product listings.
+ * Fetches and displays all confirmed product listings grouped by plastictype.
  * Integrates Framer Motion for smooth entrance animations
  * and Redux for state management.
  */
@@ -37,34 +38,32 @@ const Listing = () => {
     );
   }
 
+  // Group listings by plastictype
+  const listingsByPlasticType = listings.reduce((acc, listing) => {
+    if (listing.Status === "confirmed") { // Only include confirmed
+      const type = listing.plastictype;
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(listing);
+    }
+    return acc;
+  }, {});
+
+  // Get all plastic types
+  const plasticTypes = Object.keys(listingsByPlasticType);
+
   return (
     <UserLayout>
       <div className="container mx-auto px-4 py-10">
-        {/* Page Title with animation */}
-        <motion.h3
-          variants={textVariant()}
-          initial="hidden"
-          whileInView="show"
-          className="text-3xl font-bold text-teal-600 mb-6"
-        >
-          All Listings
-        </motion.h3>
-
-        <hr className="mb-8 border-gray-300" />
-
-        {/* Listings grid with animation for each card */}
-        <div className="flex flex-wrap gap-6">
-          {listings
-            .filter((listing) => listing.Status === "confirmed") // Only display confirmed listings
-            .map((listing, index) => (
-              <ListingCard
-                key={listing._id}            // Unique key for each card
-                listing={listing}            // Pass listing data as prop
-                index={index}                // Index used for staggered animation
-                variants={fadeIn("up", index * 0.1)} // Fade-in animation
-              />
-            ))}
-        </div>
+        {/* Render sections per plastictype */}
+        {plasticTypes.map((type) =>
+          listingsByPlasticType[type].length > 0 ? (
+            <ProductHomeSection
+              key={type}
+              product={listingsByPlasticType[type]}
+              category={type.toUpperCase()}
+            />
+          ) : null
+        )}
       </div>
     </UserLayout>
   );
