@@ -93,7 +93,7 @@ export default function AuthForm({ mode }) {
         ))}
 
       <Button className="w-full mt-6" disabled={authState.isLoading}>
-        {authState.isLoading ? "Loading..." : isLogin ? "Login" : "Register"}
+        {authState.isLoading ? "Loading..." : isLogin ? "Log In" : "Register"}
       </Button>
     </form>
   );

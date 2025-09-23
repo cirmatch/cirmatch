@@ -11,27 +11,16 @@ import Hero from "@/components/HomeComponents/Hero";
 import ProductHomeSection from "@/components/HomeComponents/ProductHomeSection";
 import { category } from "@/config/redux/action/productAction";
 
-/**
- * Home Component
- * 
- * The landing page of Cirmatch.
- * Displays hero section, product categories, and a "See More" button.
- * Fetches categories from Redux on mount and handles loading state.
- */
-const categoryKeys = ["pet", "pp", "ldpe", "hdpe"]; // Scalable product categories
+const categoryKeys = ["pet", "pp", "ldpe", "hdpe"];
 
 export default function Home() {
   const dispatch = useDispatch();
-
-  // Access product categories and loading state from Redux
   const { categories, isLoading } = useSelector((state) => state.product);
 
-  // Fetch all categories on component mount
   useEffect(() => {
     dispatch(category());
   }, [dispatch]);
 
-  // Display loading state while fetching categories
   if (isLoading) {
     return (
       <UserLayout>
@@ -42,7 +31,6 @@ export default function Home() {
 
   return (
     <>
-      {/* SEO and Open Graph Meta Tags */}
       <Head>
         <title>Cirmatch - Home</title>
         <meta
@@ -66,22 +54,21 @@ export default function Home() {
 
       <UserLayout>
         <main className="relative min-h-screen overflow-x-hidden">
-          {/* Hero Section */}
           <Hero />
 
-          {/* Render Product Sections by Category */}
-          {categoryKeys.map(
-            (key) =>
-              categories?.[key]?.length > 0 && (
-                <ProductHomeSection
-                  key={key}
-                  product={categories[key]}
-                  category={key.toUpperCase()}
-                />
-              )
-          )}
+          {categoryKeys.map((key) => {
+            const products = categories?.[key] || [];
+            if (products.length === 0) return null;
 
-          {/* "See More" Button */}
+            return (
+              <ProductHomeSection
+                key={key}
+                product={products}
+                category={key.toUpperCase()}
+              />
+            );
+          })}
+
           <div className="flex justify-center mt-10">
             <Link
               href="/product"

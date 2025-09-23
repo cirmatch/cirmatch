@@ -22,7 +22,7 @@ const listingSchema = new Schema(
     color: { type: String },
     washingProcess: {
       type: String,
-      enum: ["Cold Wash", "Hot Wash"],
+      enum: ["Cold Wash", "Hot Wash","Unwashed"],
       required: false,
     },
     Status: {

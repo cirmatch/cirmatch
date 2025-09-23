@@ -9,23 +9,25 @@ import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/motion";
 import ButtonLink from "../Button/button";
 import ListingCard from "@/components/Product/listingCard";
+import { useState } from "react";
 
 /**
  * ProductHomeSection Component
  * 
  * Displays a horizontal carousel of products using Swiper.
- * Includes a heading, "View All" button, and custom navigation arrows.
- * Filters out only confirmed products and renders ListingCards inside SwiperSlides.
+ * Each Swiper has independent navigation buttons using callback refs.
+ * Filters only confirmed products.
  * 
  * Props:
  * - product: array of product listings
  * - category: string representing the category name
  */
 const ProductHomeSection = ({ product = [], category }) => {
+  const [prevEl, setPrevEl] = useState(null);
+  const [nextEl, setNextEl] = useState(null);
+
   // Filter only confirmed products
   const confirmedProducts = product.filter((listing) => listing.Status === "confirmed");
-
-  // Return null if no confirmed products exist
   if (confirmedProducts.length === 0) return null;
 
   return (
@@ -55,37 +57,42 @@ const ProductHomeSection = ({ product = [], category }) => {
         </ButtonLink>
       </motion.div>
 
-      {/* Swiper Carousel with Custom Navigation Arrows */}
+      {/* Swiper Carousel with unique navigation buttons */}
       <motion.div
         variants={fadeIn("up", 0.5)}
         initial="hidden"
         whileInView="show"
-        className="relative flex items-center justify-between gap-4"
+        className="relative flex items-center gap-4"
       >
-        {/* Left Navigation Arrow */}
+        {/* Left Navigation Button */}
         <motion.button
+          ref={setPrevEl}
           variants={fadeIn("right", 0.6)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="swiper-button-prev-custom w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
+          className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
         >
           <BsChevronLeft className="w-6 h-6" />
         </motion.button>
 
-        {/* Swiper Carousel */}
+        {/* Swiper */}
         <Swiper
           modules={[Navigation]}
           spaceBetween={30}
-          navigation={{
-            nextEl: ".swiper-button-next-custom",
-            prevEl: ".swiper-button-prev-custom",
-          }}
           breakpoints={{
             0: { slidesPerView: 1 },
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
           }}
-          className="product-swiper w-full"
+          navigation={{
+            prevEl,
+            nextEl,
+          }}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevEl;
+            swiper.params.navigation.nextEl = nextEl;
+          }}
+          className="w-full"
         >
           {confirmedProducts.map((listing, index) => (
             <SwiperSlide key={listing._id} className="h-full flex justify-center">
@@ -93,8 +100,7 @@ const ProductHomeSection = ({ product = [], category }) => {
                 variants={fadeIn("up", 0.3 * (index + 1))}
                 className="h-full w-full flex justify-center"
               >
-                {/* Ensure ListingCard fills the slide */}
-                <div className="w-full sm:w-full md:w-full lg:w-full">
+                <div className="w-full">
                   <ListingCard listing={listing} index={index} fullWidth />
                 </div>
               </motion.div>
@@ -102,12 +108,13 @@ const ProductHomeSection = ({ product = [], category }) => {
           ))}
         </Swiper>
 
-        {/* Right Navigation Arrow */}
+        {/* Right Navigation Button */}
         <motion.button
+          ref={setNextEl}
           variants={fadeIn("left", 0.6)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="swiper-button-next-custom w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
+          className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
         >
           <BsChevronRight className="w-6 h-6" />
         </motion.button>
