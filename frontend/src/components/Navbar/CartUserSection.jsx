@@ -11,7 +11,7 @@ const CartUserSection = () => {
   const { cart } = useSelector((state) => state.cart );
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.clear();
     dispatch(reset());
     setUserMenuOpen(false);
   };
