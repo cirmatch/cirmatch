@@ -61,7 +61,9 @@ So Buy and Sell easily on cirmatch.com
            hover:bg-teal-600 hover:shadow-teal-400/50 hover:shadow-xl 
            active:scale-95"
           >
-            Add New
+
+            Add My Product
+
           </Link>
         </div>
       </div>

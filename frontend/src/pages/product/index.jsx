@@ -2,21 +2,16 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { motion } from "framer-motion";
-
-import { getAllListing } from "@/config/redux/action/productAction";
-import { fadeIn, textVariant } from "@/utils/motion";
 import UserLayout from "@/layout/clienLayout/UserLayout";
 import Loading from "@/components/Loading";
 import ProductHomeSection from "@/components/HomeComponents/ProductHomeSection";
-
+import { getAllListing } from "@/config/redux/action/productAction";
 
 /**
  * Listing Component
  * 
- * Fetches and displays all confirmed product listings grouped by plastictype.
- * Integrates Framer Motion for smooth entrance animations
- * and Redux for state management.
+ * Fetches and displays all confirmed product listings grouped into fixed plastic type sections.
+ * Any unknown plastictype will be grouped under 'Other'.
  */
 const Listing = () => {
   const dispatch = useDispatch();
@@ -38,28 +33,31 @@ const Listing = () => {
     );
   }
 
-  // Group listings by plastictype
-  const listingsByPlasticType = listings.reduce((acc, listing) => {
-    if (listing.Status === "confirmed") { // Only include confirmed
-      const type = listing.plastictype;
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(listing);
-    }
+  // Filter confirmed listings
+  const confirmedListings = listings.filter(l => l.Status === "confirmed");
+
+  // Fixed main plastic types
+  const mainTypes = ["PET","Scrap","HDPE","PP","LDPE","POLY","PVC","ABS","EPS","PC","Mixed"];
+
+  // Prepare sections object
+  const sections = mainTypes.reduce((acc, type) => {
+    acc[type] = confirmedListings.filter(listing => listing.plastictype === type);
     return acc;
   }, {});
 
-  // Get all plastic types
-  const plasticTypes = Object.keys(listingsByPlasticType);
+  // Add 'Other' section
+  sections["Other"] = confirmedListings.filter(
+    listing => !mainTypes.includes(listing.plastictype)
+  );
 
   return (
     <UserLayout>
       <div className="container mx-auto px-4 py-10">
-        {/* Render sections per plastictype */}
-        {plasticTypes.map((type) =>
-          listingsByPlasticType[type].length > 0 ? (
+        {Object.keys(sections).map((type) =>
+          sections[type].length > 0 ? (
             <ProductHomeSection
               key={type}
-              product={listingsByPlasticType[type]}
+              product={sections[type]}
               category={type.toUpperCase()}
             />
           ) : null

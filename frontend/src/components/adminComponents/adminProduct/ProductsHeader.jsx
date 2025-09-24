@@ -6,7 +6,7 @@ export default function ProductsHeader({ searchTerm, setSearchTerm }) {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
       <Link
-        href="/adminDashboard/addNew"
+        href="/addNew"
         className="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition"
       >
         <FiPlus />
