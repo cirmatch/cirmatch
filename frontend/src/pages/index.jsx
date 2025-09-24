@@ -80,6 +80,8 @@ export default function Home() {
               See More
             </Link>
           </div>
+          <br />
+          <br />
         </main>
       </UserLayout>
     </>
