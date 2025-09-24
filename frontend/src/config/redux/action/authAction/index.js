@@ -94,18 +94,10 @@ export const logoutUser = createAsyncThunk(
 // 🔐 Login from token (if used)
 export const loginFromToken = createAsyncThunk(
   "user/loginFromToken",
-  async (token, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      const response = await client.get("/auth/validate", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true, 
-      });
-      return {
-        token,
-        user: response.data.user,
-      };
+      const response = await client.get("/auth/validate"); // uses access token
+      return { user: response.data.user };
     } catch (error) {
       clearTokens();
       return thunkAPI.rejectWithValue("Invalid or expired token");

@@ -84,6 +84,11 @@ export function ProductInfo({
         <p>
           <span className="font-semibold">Material Type:</span> {listing.metarialtype}
         </p>
+        {listing.color && (
+          <p>
+            <span className="font-semibold">Colour :</span> {listing.color}
+          </p>
+        )}
         <p>
           <span className="font-semibold">Quantity:</span> {listing.quantity}
         </p>

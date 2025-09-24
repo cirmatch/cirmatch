@@ -97,22 +97,34 @@ export const login = async (req, res) => {
 
 // ===================== REFRESH TOKEN =====================
 export const refreshToken = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return res.status(httpStatus.UNAUTHORIZED).json({ message: "Refresh token missing" });
+  const token = req.cookies.refreshToken;
+  if (!token) return res.status(httpStatus.UNAUTHORIZED).json({ message: "Refresh token missing" });
 
   try {
-    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+    const decoded = jwt.verify(token, JWT_REFRESH_SECRET);
     const user = await User.findById(decoded.id);
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user || user.refreshToken !== token) {
       return res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid refresh token" });
     }
 
+    // Generate new tokens
     const newAccessToken = generateAccessToken(user);
     const newRefreshToken = generateRefreshToken(user);
+
+    // Save new refresh token in DB
     user.refreshToken = newRefreshToken;
     await user.save();
 
-    res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+    // Set refresh token in HttpOnly cookie
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Only send access token to frontend
+    res.json({ accessToken: newAccessToken });
   } catch (err) {
     res.status(httpStatus.UNAUTHORIZED).json({ message: "Invalid refresh token" });
   }

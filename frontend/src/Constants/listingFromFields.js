@@ -44,17 +44,18 @@ export const listingFormFields = [
     validation: yup.string(), // optional
   },
   {
-    name: "quantity",
-    label: "Quantity",
-    type: "number",
-    placeholder: "e.g., 50",
-    validation: yup
-      .string()
-      .required("Quantity is required")
-      .matches(
-        /^\d+(\.\d+)?\s*(Kg|Mt)$/,
-        "Quantity must be a number followed by Kg or Mt, e.g., '50 Kg'"
-      ),
+    name: "location",
+    label: "Location",
+    type: "text",
+    placeholder: "e.g., Dhaka",
+    validation: yup.string().required("Location is required"),
+  },
+  {
+    name: "color",
+    label: "Color",
+    type: "text",
+    placeholder: "e.g., Blue",
+    validation: yup.string(),
   },
   {
     name: "price",
@@ -68,18 +69,17 @@ export const listingFormFields = [
       .required("Price is required"),
   },
   {
-    name: "location",
-    label: "Location",
-    type: "text",
-    placeholder: "e.g., Dhaka",
-    validation: yup.string().required("Location is required"),
-  },
-  {
-    name: "color",
-    label: "Color",
-    type: "text",
-    placeholder: "e.g., Blue",
-    validation: yup.string().required("Color is required"),
+    name: "quantity",
+    label: "Quantity",
+    type: "number",
+    placeholder: "e.g., 50",
+    validation: yup
+      .string()
+      .required("Quantity is required")
+      .matches(
+        /^\d+(\.\d+)?\s*(Kg|Mt)$/,
+        "Quantity must be a number followed by Kg or Mt, e.g., '50 Kg'"
+      ),
   },
 ];
 

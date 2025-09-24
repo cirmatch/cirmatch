@@ -5,7 +5,7 @@ export const navLinks = [
   { href: "/benifits/buyers", label: "Benifits for buyers"},
   { href: "/benifits/sellers", label: "Benifits for sellers"},
   { href: "/contact", label: "Contact Us" },
-  { href: "/addNew", label: "Add New Product" },
+  { href: "/addNew", label: "Add My Product" },
   { href: "/adminDashboard", label: "Admin",adminOnly: true  },
 ];
 

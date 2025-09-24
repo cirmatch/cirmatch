@@ -111,8 +111,13 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, () => initialState)
 
       // LOGIN FROM TOKEN
+      
+      .addCase(loginFromToken.pending, (state, action) => {
+        state.isLoading = true;
+      })
       .addCase(loginFromToken.fulfilled, (state, action) => {
         state.loggedIn = true;
+        state.isLoading = false;
         state.user = action.payload.user || null;
         state.message = "Token session restored";
       })
