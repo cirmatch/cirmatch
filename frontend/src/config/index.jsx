@@ -28,35 +28,34 @@ client.interceptors.request.use((config) => {
 // ========================
 // Handles 401 errors by attempting to refresh the access token
 client.interceptors.response.use(
-  (res) => res, // If response is successful, just return it
+  (res) => res,
   async (error) => {
     const originalRequest = error.config;
 
-    // Check for 401 Unauthorized & prevent infinite retry loops
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Mark request as retried
-
+    // Prevent infinite loops
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !window.location.pathname.startsWith("/auth")
+    ) {
+      originalRequest._retry = true;
       try {
-        // Attempt to refresh the access token using the refresh token stored in HttpOnly cookie
         const { data } = await axios.post(
           `${BASE_URL}/refresh-token`,
           {},
           { withCredentials: true }
         );
 
-        // Store new access token and retry the original request
         storeTokens(data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return client(originalRequest);
       } catch (err) {
-        // If refresh fails, clear tokens and redirect to login
         clearTokens();
-        window.location.href = "/auth";
+        window.location.href = "/auth"; // redirect once
         return Promise.reject(err);
       }
     }
 
-    // For other errors or already retried requests, reject the promise
     return Promise.reject(error);
   }
 );
