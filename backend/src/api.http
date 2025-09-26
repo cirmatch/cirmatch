@@ -1,0 +1,128 @@
+### Register a new user
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Tanim",
+  "identifier": "tanim@example.com",  // or "017XXXXXXXX"
+  "password": "yourStrongPassword"
+}
+
+###
+
+### Login user
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "identifier": "tanim@example.com",  // or "017XXXXXXXX"
+  "password": "yourStrongPassword"
+}
+
+###
+
+### Refresh token
+POST http://localhost:5000/api/auth/refresh-token
+Content-Type: application/json
+
+# Requires valid cookie header (you can manually paste cookie from browser if needed)
+
+###
+
+### Verify account with code
+POST http://localhost:5000/api/auth/verify
+Content-Type: application/json
+
+{
+  "identifier": "tanim@example.com",  // or "017XXXXXXXX"
+  "code": "123456"  // replace with actual code from console
+}
+
+###
+
+### Resend verification code
+POST http://localhost:5000/api/auth/resend-code
+Content-Type: application/json
+
+{
+  "identifier": "tanim@example.com"  // or "017XXXXXXXX"
+}
+
+
+### Get all listings
+GET http://localhost:5000/api/v1/getAllListings
+Accept: application/json
+
+###
+
+## Get listing detail by ID
+GET http://localhost:5000/api/v1/getAllListings/684ecf5d13abf37520b115a6
+Accept: application/json
+
+###
+
+### Search listings by query
+GET http://localhost:5000/api/v1/search?q=Pet
+Accept: application/json
+
+
+
+### Submit contact form (user must be logged in, so send Bearer token)
+POST http://localhost:5000/api/v1/contact
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+{
+  "email": "talukdertanim73@gmail.com",
+  "subject": "Support Request",
+  "message": "Can you help me with order ID #12345?"
+}
+
+
+### Add product to cart
+POST http://localhost:5000/api/v1/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+{
+  "productId": "684ecf5d13abf37520b115a6",
+  "quantity": 5
+}
+
+###
+
+### Remove product from cart
+DELETE http://localhost:5000/api/v1/remove/684ecf5d13abf37520b115a6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+###
+
+### Get current user's cart
+GET http://localhost:5000/api/v1/usercart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+###
+
+### Clear user's cart
+DELETE http://localhost:5000/api/v1/clearcart
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+###
+
+
+### Add Review
+POST http://localhost:5000/api/v1/getlistings/684ecf5d13abf37520b115a6/review
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+{
+  "rating": 4,
+  "comment": "Great product!"
+}
+
+### Delete Review
+DELETE http://localhost:5000/api/v1/getlistings/684ecf5d13abf37520b115a6/review/684ed20e0b1ccd44c9f4141a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGVjZjA0MTNhYmYzNzUyMGIxMTU5ZiIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc0OTk5NTI4NiwiZXhwIjoxNzQ5OTk4ODg2fQ.m3t60sP1YFlOKzgoONCzJqtRe3cLJOH74VgrGMrmrmU
+
+### Get All Reviews for a Product
+GET http://localhost:5000/api/v1/getlistings/684ecf5d13abf37520b115a6
