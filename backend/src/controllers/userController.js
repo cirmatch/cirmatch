@@ -115,9 +115,9 @@ export const forgetPassword = async (req, res) => {
   // Send via Email or SMS
   try {
      if (isEmail) {
-         try { await sendVerificationEmail(identifier, code); } catch (err) { console.error(err); }
+         try { await sendVerificationEmail(identifier, verificationCode); } catch (err) { console.error(err); }
        } else {
-         try { await sendVerificationSMS(identifier, code); } catch (err) { console.error(err); }
+         try { await sendVerificationSMS(identifier, verificationCode); } catch (err) { console.error(err); }
        }
 
     res.status(200).json({ message: "Verification code sent" });
