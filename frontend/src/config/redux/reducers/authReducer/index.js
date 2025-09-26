@@ -123,6 +123,7 @@ const authSlice = createSlice({
       })
       .addCase(loginFromToken.rejected, (state, action) => {
         state.loggedIn = false;
+        state.isLoading = false;
         state.user = null;
         state.isError = true;
         state.message = action.payload || "Session expired";

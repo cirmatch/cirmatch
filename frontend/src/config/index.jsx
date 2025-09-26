@@ -1,5 +1,7 @@
 import axios from "axios";
 import { getAccessToken, storeTokens, clearTokens } from "@/utils/tokenHelper";
+import { useRouter } from "next/router";
+
 
 // Base URL for all API requests
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -31,7 +33,7 @@ client.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-
+      const router = useRouter();
     // Prevent infinite loops
     if (
       error.response?.status === 401 &&
@@ -51,7 +53,10 @@ client.interceptors.response.use(
         return client(originalRequest);
       } catch (err) {
         clearTokens();
-        window.location.href = "/auth"; // redirect once
+        router.push({
+          pathname: '/',
+          query: { error: errorMessage } // pass the error as query param
+        }); // redirect once
         return Promise.reject(err);
       }
     }
