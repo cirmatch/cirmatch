@@ -9,6 +9,8 @@ import Input from "./input";
 import Button from "./Button";
 import { loginUser, registerUser } from "@/config/redux/action/authAction";
 import { formFields, loginSchema, registerSchema, userIcon } from "@/Constants/authFormConstants";
+import { emptyMessage } from "@/config/redux/reducers/authReducer";
+import Link from "next/link";
 
 export default function AuthForm({ mode }) {
   const dispatch = useDispatch();
@@ -34,9 +36,18 @@ export default function AuthForm({ mode }) {
   }, [authState.loggedIn, router]);
 
   useEffect(() => {
-    if (authState.isError && authState.message) toast.error(authState.message);
-    else if (authState.isSuccess &&  authState.message) toast.success(authState.message);
-  }, [authState.isError, authState.isSuccess, authState.message]);
+    if (authState.isError && authState.message) {
+      toast.error(authState.message);
+      setTimeout(() => {
+        dispatch(emptyMessage());
+      }, 4000); // 4 seconds
+    } else if (authState.isSuccess && authState.message) {
+      toast.success(authState.message);
+      setTimeout(() => {
+        dispatch(emptyMessage());
+      }, 4000); // 4 seconds
+    }
+  }, [authState.isError, authState.isSuccess, authState.message, dispatch]);
 
   const onSubmit = async (formData) => {
     try {
@@ -44,6 +55,8 @@ export default function AuthForm({ mode }) {
         await dispatch(loginUser(formData)).unwrap();
       } else {
         await dispatch(registerUser(formData)).unwrap();
+        localStorage.setItem("identifier", formData.identifier);
+        localStorage.setItem("verifyType", "register");
         router.push("/auth/verifyMail");
       }
     } catch (error) {
@@ -95,6 +108,14 @@ export default function AuthForm({ mode }) {
       <Button className="w-full mt-6" disabled={authState.isLoading}>
         {authState.isLoading ? "Loading..." : isLogin ? "Log In" : "Register"}
       </Button>
+      <div className="text-center mt-4">
+        <Link
+          href="/auth/forget-password"
+          className="text-teal-600 hover:text-teal-800 font-medium transition-colors duration-200"
+        >
+          {isLogin ? "Forgot Password? Reset it here" : ""}
+        </Link>
+      </div>
     </form>
   );
 }

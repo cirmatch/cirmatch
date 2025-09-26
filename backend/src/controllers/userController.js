@@ -17,7 +17,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "yourRefreshSecret"
 
 // ===================== COMMON FUNCTIONS =====================
 const generateVerificationCode = () => Math.floor(100000 + Math.random() * 900000).toString();
-const generateResetToken = () => require("crypto").randomBytes(32).toString("hex");
+
 
 // ===================== REGISTER =====================
 export const register = async (req, res) => {
@@ -95,6 +95,65 @@ export const login = async (req, res) => {
   res.status(httpStatus.OK).json({ message: "Logged in successfully", accessToken, user });
 };
 
+// ===================== FORGET PASSWORD =====================
+export const forgetPassword = async (req, res) => {
+  const { identifier } = req.body;
+  const isEmail = identifier.includes("@");
+  const query = isEmail ? { email: identifier } : { number: identifier };
+
+  const user = await User.findOne(query);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  // Generate 6-digit OTP
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = new Date(Date.now() + 10 * 60 * 1000); // valid for 10 min
+
+  user.verificationCode = verificationCode;
+  user.verificationCodeExpires = expires;
+  await user.save();
+
+  // Send via Email or SMS
+  try {
+    if (isEmail) {
+      await sendEmail(identifier, verificationCode);
+    } else {
+      await sendSMS(identifier, verificationCode);
+    }
+
+    res.status(200).json({ message: "Verification code sent" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to send verification code" });
+  }
+};
+// ===================== RESET PASSWORD =====================
+export const resetPassword = async (req, res) => {
+  const { identifier, code, newPassword } = req.body;
+  const isEmail = identifier.includes("@");
+  const query = isEmail ? { email: identifier } : { number: identifier };
+
+  const user = await User.findOne(query);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  if (
+    user.verificationCode !== code ||
+    user.verificationCodeExpires < new Date()
+  ) {
+    return res.status(400).json({ message: "Invalid or expired code" });
+  }
+
+  // Hash the new password
+  user.password = await bcrypt.hash(newPassword, 10);
+
+  // Clear the verification code
+  user.verificationCode = undefined;
+  user.verificationCodeExpires = undefined;
+
+  await user.save();
+
+  res.status(200).json({ message: "Password reset successfully" });
+};
+
 // ===================== REFRESH TOKEN =====================
 export const refreshToken = async (req, res) => {
   const token = req.cookies.refreshToken;
@@ -141,7 +200,6 @@ export const verifyIdentifier = async (req, res) => {
 
   const user = await User.findOne(query);
   if (!user) return res.status(httpStatus.NOT_FOUND).json({ message: "User not found" });
-  if (user.isVerified) return res.status(httpStatus.OK).json({ message: "Account already verified" });
   if (user.verificationCode !== code || Date.now() > user.verificationCodeExpires) {
     return res.status(httpStatus.BAD_REQUEST).json({ message: "Invalid or expired verification code" });
   }
@@ -165,7 +223,7 @@ export const resendCode = async (req, res) => {
 
   const user = await User.findOne(query);
   if (!user) return res.status(httpStatus.NOT_FOUND).json({ message: "User not found" });
-  if (user.isVerified) return res.status(httpStatus.BAD_REQUEST).json({ message: "Account already verified" });
+
 
   const code = generateVerificationCode();
   const expires = new Date(Date.now() + 10*60*1000);

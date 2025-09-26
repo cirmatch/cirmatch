@@ -5,6 +5,8 @@ import {
   resendCode,
   verifyIdentifier,
   refreshToken,
+  forgetPassword,
+  resetPassword,
 } from "../controllers/userController.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import { authenticate, authorizeAdmin } from "../middleware/auth.js";
@@ -15,6 +17,8 @@ const router = Router();
 /* ================= AUTH ROUTES ================= */
 router.post("/login", wrapAsync(login));
 router.post("/register", wrapAsync(register));
+router.post("/forget-password", wrapAsync(forgetPassword))
+router.post("/reset-password", wrapAsync(resetPassword))
 router.post("/refresh-token", wrapAsync(refreshToken));
 
 /* ================= VERIFICATION ROUTES ================= */

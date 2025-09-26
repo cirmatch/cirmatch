@@ -7,6 +7,8 @@ import {
   verifyEmail,
   resendCode,
   getUserStats,
+  forgetPassword,
+  resetPassword,
 } from "../../action/authAction";
 
 const initialState = {
@@ -26,6 +28,8 @@ const authSlice = createSlice({
     reset: () => initialState,
     emptyMessage: (state) => {
       state.message = "";
+      state.isError = false;
+      state.isSuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -63,6 +67,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
+        state.loggedIn = true;
         state.user = action.payload.user || null;
         state.message = "Registration successful";
       })
@@ -81,7 +86,6 @@ const authSlice = createSlice({
       .addCase(verifyEmail.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.loggedIn = true;
         state.message = action.payload;
       })
       .addCase(verifyEmail.rejected, (state, action) => {
@@ -90,6 +94,46 @@ const authSlice = createSlice({
         state.loggedIn = false;
         state.message = action.payload || "Verification failed";
       })
+      
+          // FORGET PASSWORD
+    .addCase(forgetPassword.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = "Sending reset code...";
+    })
+    .addCase(forgetPassword.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.message = action.payload.message || "Reset code sent successfully";
+    })
+    .addCase(forgetPassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload || "Failed to send reset code";
+    })
+
+    // RESET PASSWORD
+    .addCase(resetPassword.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = "Resetting password...";
+    })
+    .addCase(resetPassword.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.message = action.payload.message || "Password reset successful";
+    })
+    .addCase(resetPassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload || "Failed to reset password";
+    })
 
       // RESEND CODE
       .addCase(resendCode.pending, (state) => {
@@ -125,7 +169,6 @@ const authSlice = createSlice({
         state.loggedIn = false;
         state.isLoading = false;
         state.user = null;
-        state.isError = true;
         state.message = action.payload || "Session expired";
       })
       // get user Stats

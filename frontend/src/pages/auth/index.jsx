@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const dispatch = useDispatch();
-  const authState = useSelector((state) => state.auth);
 
     useEffect(() => {
       dispatch(emptyMessage())

@@ -49,6 +49,38 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Forget Password
+export const forgetPassword = createAsyncThunk(
+  "user/forgetPassword",
+  async ({ identifier }, thunkAPI) => {
+    try {
+      const response = await client.post("/forget-password", { identifier}, { withCredentials: true });
+
+      return thunkAPI.fulfillWithValue(response.data);
+
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message || "Login failed";
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// reset Password
+export const resetPassword = createAsyncThunk(
+  "user/resetPassword",
+  async ({ identifier, code, newPassword }, thunkAPI) => {
+    try {
+      const response = await client.post("/reset-password", { identifier, code, newPassword}, { withCredentials: true });
+
+      return thunkAPI.fulfillWithValue(response.data);
+
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message || "Login failed";
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // ✅ Email Verification
 export const verifyEmail = createAsyncThunk(
   "user/verifyEmail",
