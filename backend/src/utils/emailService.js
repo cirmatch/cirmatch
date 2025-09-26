@@ -1,7 +1,10 @@
 import nodemailer from "nodemailer";
 import axios from "axios";
 
-const verificationEmailHtml = `
+
+
+export const sendVerificationEmail = async (toEmail, code) => {
+  const verificationEmailHtml = `
 <!doctype html>
 <html>
 <head>
@@ -91,8 +94,6 @@ const verificationEmailHtml = `
 </body>
 </html>
 `;
-
-export const sendVerificationEmail = async (toEmail, code) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
