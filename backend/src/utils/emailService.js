@@ -130,4 +130,8 @@ export const sendVerificationSMS = async (toNumber, code) => {
     console.error("SMS sending failed:", error.message);
     throw new Error("Failed to send SMS");
   }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 0816727e83d48a6830f10fafff734d276ac2f57f
