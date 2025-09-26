@@ -9,11 +9,7 @@ import { emptyMessage } from "@/config/redux/reducers/authReducer";
 export default function VerifyPage() {
   const dispatch = useDispatch();
   const router = useRouter();
-<<<<<<< HEAD
   const { message, isLoading, isSuccess, isError,loggedIn } = useSelector(
-=======
-  const { message, isLoading, isSuccess, isError } = useSelector(
->>>>>>> 0816727e83d48a6830f10fafff734d276ac2f57f
     (state) => state.auth
   );
 
@@ -72,11 +68,7 @@ export default function VerifyPage() {
       toast.success(message);
       dispatch(emptyMessage());
 
-<<<<<<< HEAD
       if (type === "register" && loggedIn ) {
-=======
-      if (type === "register") {
->>>>>>> 0816727e83d48a6830f10fafff734d276ac2f57f
         localStorage.removeItem("identifier");
         localStorage.removeItem("verifyType");
         router.push("/");

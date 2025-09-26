@@ -89,18 +89,11 @@ const MobileMenu = () => {
           <FaUser />
           <span>Account</span>
         </Link>
-        {/* <Link
-          href="/account/myOrder"
-          className="flex items-center gap-3 text-gray-700 hover:text-teal-500 text-base"
-        >
-          <FiInbox />
-          <span>Order</span>
-        </Link> */}
       </div>
 
       {/* Login / Signup or Logout */}
       <div className="mt-4 border-t pt-4">
-        {loggedIn ? (
+        {loggedIn && user !== null ? (
           <button
             onClick={handleLogout}
             className="w-full px-4 py-2 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
