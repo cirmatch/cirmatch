@@ -4,16 +4,19 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "yourRefreshSecret"; // add to .env
-const ACCESS_TOKEN_EXPIRES_IN = "1m"; 
-const REFRESH_TOKEN_EXPIRES_IN = "7d";  
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
+const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || "1d";
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || "7d";
 
-
+// Access token with additional info
 export const generateAccessToken = (user) => {
-  return jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
+  const payload = { id: user._id, email: user.email, role: user.role };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRES_IN });
 };
 
+// Refresh token
 export const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user._id }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
+  const payload = { id: user._id };
+  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRES_IN });
 };
