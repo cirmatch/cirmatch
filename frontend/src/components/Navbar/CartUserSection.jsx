@@ -57,7 +57,7 @@ const CartUserSection = () => {
                 Account
               </Link>
             </li>
-            {loggedIn && user !== null (
+            {loggedIn && user !== null && (
               <li>
                 <button
                   onClick={handleLogout}

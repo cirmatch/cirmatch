@@ -1,6 +1,5 @@
 import axios from "axios";
 import { getAccessToken, storeTokens, clearTokens } from "@/utils/tokenHelper";
-import { useRouter } from "next/router";
 
 
 // Base URL for all API requests
@@ -33,7 +32,6 @@ client.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-      const router = useRouter();
     // Prevent infinite loops
     if (
       error.response?.status === 401 &&
@@ -53,10 +51,7 @@ client.interceptors.response.use(
         return client(originalRequest);
       } catch (err) {
         clearTokens();
-        router.push({
-          pathname: '/',
-          query: { error: errorMessage } // pass the error as query param
-        }); // redirect once
+        // Let the component handle the redirect based on Redux state
         return Promise.reject(err);
       }
     }

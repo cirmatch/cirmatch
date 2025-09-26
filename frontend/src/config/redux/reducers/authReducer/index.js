@@ -67,7 +67,6 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.loggedIn = true;
         state.user = action.payload.user || null;
         state.message = "Registration successful";
       })
@@ -86,6 +85,7 @@ const authSlice = createSlice({
       .addCase(verifyEmail.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.loggedIn = true;
         state.message = action.payload;
       })
       .addCase(verifyEmail.rejected, (state, action) => {
