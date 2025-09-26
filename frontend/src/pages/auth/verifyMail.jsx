@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import { verifyEmail, resendCode } from "@/config/redux/action/authAction";
+import { emptyMessage } from "@/config/redux/reducers/authReducer";
 
 export default function VerifyPage() {
   const dispatch = useDispatch();
@@ -11,44 +12,60 @@ export default function VerifyPage() {
   const { message, isLoading, isSuccess, isError } = useSelector((state) => state.auth);
 
   const [code, setCode] = useState("");
-  const [identifier, setIdentifier] = useState("");
+  const [identifier] = useState(() => localStorage.getItem("identifier") || "");
+  const [type] = useState(() => localStorage.getItem("verifyType") || "register");
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
 
-  // Countdown timer
-  useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-      return () => clearInterval(interval);
-    } else {
-      setCanResend(true);
-    }
-  }, [timer]);
+  const timerRef = useRef(null);
 
-  // Load identifier (email or phone number)
+  // Start countdown
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimer(60);
+    setCanResend(false);
+
+    timerRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  // On page load
   useEffect(() => {
-    const storedIdentifier = localStorage.getItem("identifier");
-    if (storedIdentifier) {
-      setIdentifier(storedIdentifier);
-    } else {
-      alert("No identifier found. Please register first.");
-    }
+    startTimer();
+    return () => clearInterval(timerRef.current);
   }, []);
 
+  // Listen for Redux changes
   useEffect(() => {
-    if (isSuccess && message === "Verification successful") {
-      localStorage.removeItem("identifier");
-      router.push("/");
+    if (isError && message) {
+      toast.error(message);
+      dispatch(emptyMessage()); // clear message in Redux
     }
-  }, [isSuccess, message, router]);
 
-  // Toast notifications for success and error messages
-  useEffect(() => {
-    if (isError) toast.error(message);
-    else if (isSuccess) toast.success(message);
-  }, [isError, isSuccess, message]);
+    if (isSuccess && message) {
+      toast.success(message);
+      dispatch(emptyMessage());
+      
+      if (type === "register") {
+        localStorage.removeItem("identifier");
+        localStorage.removeItem("verifyType");
+        router.push("/");
+      }
+      if (type === "reset") {
+        router.push(`/auth/reset-password?identifier=${identifier}&code=${code}`);
+      }
+    }
+  }, [isSuccess, isError, message, dispatch, type, router, identifier, code]);
 
-  // Submit verification code
+  // Handle verification submit
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!/^\d{6}$/.test(code)) {
@@ -58,19 +75,17 @@ export default function VerifyPage() {
     dispatch(verifyEmail({ identifier, code }));
   };
 
-  // Resend code
+  // Handle resend
   const handleResend = () => {
-    if (!identifier) {
-      toast.error("Identifier not found. Please register first.");
-      return;
-    }
+    if (!identifier) return toast.error("Identifier not found.");
     dispatch(resendCode({ identifier }));
-    setTimer(60);
-    setCanResend(false);
+    toast.success("Verification code resent!");
+    startTimer();
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold text-center mb-6">Verification</h1>
         <form onSubmit={handleSubmit}>
@@ -80,7 +95,7 @@ export default function VerifyPage() {
             placeholder="Enter 6-digit code"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <button
             type="submit"
