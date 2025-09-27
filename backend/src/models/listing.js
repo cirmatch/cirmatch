@@ -62,7 +62,10 @@ const listingSchema = new Schema(
 
     // Description of the listing
     description: { type: String, required: true },
-
+    // Tracks the number of times the product has been purchased, added to wishlists, and viewed
+    purchaseCount: { type: Number, default: 0 },
+    wishlistCount: { type: Number, default: 0 },
+    viewCount: { type: Number, default: 0 },
     // Author (User who created the listing)
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 

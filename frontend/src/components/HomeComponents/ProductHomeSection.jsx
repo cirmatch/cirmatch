@@ -47,7 +47,7 @@ const ProductHomeSection = ({ product = [], category }) => {
         </motion.p>
 
         <ButtonLink
-          href={`/search?q=${category}`}
+          href={`/search?q=${confirmedProducts[0].plastictype}`}
           bgColor="white"
           textColor="#009688"
           border="1px solid #009688"

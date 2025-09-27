@@ -6,7 +6,7 @@ export const useListingForm = (initial = {}) => {
     description: "",
     plastictype: "",
     metarialtype: "",
-    images: [],        
+    images: [],
     quantity: "",
     price: "",
     location: "",
@@ -16,17 +16,16 @@ export const useListingForm = (initial = {}) => {
     ...initial,
   });
 
-  // preview is array of URLs for all images
-  const [preview, setPreview] = useState([]); 
+  // Preview for showing uploaded images
+  const [preview, setPreview] = useState([]);
+
   const [formError, setFormError] = useState("");
 
-  // handleChange will ONLY handle non-image fields
+  // Handle input change (except images)
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     if (files) {
-      // ignore here because images handled separately with index-based input
-      return;
+      return; // images handled separately
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -36,8 +35,10 @@ export const useListingForm = (initial = {}) => {
   const validateForm = (requiredFields) => {
     for (let field of requiredFields) {
       const value = formData[field];
-
-      if (field !== "sourcingCondition" && field !== "washingProcess") {
+      if (
+        field !== "sourcingCondition" &&
+        field !== "washingProcess"
+      ) {
         if (
           value === null ||
           value === undefined ||
@@ -53,10 +54,9 @@ export const useListingForm = (initial = {}) => {
     return true;
   };
 
-  // Validate images (only count real files)
+  // Validate images (must upload at least 1)
   const validateImages = () => {
     const validFiles = (formData.images || []).filter((f) => f instanceof File);
-
     if (validFiles.length === 0) {
       setFormError("❗ At least one image is required");
       return false;

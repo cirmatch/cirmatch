@@ -155,11 +155,11 @@ export const editListing = async (req, res) => {
     color,
     washingProcess,
   } = req.body;
-
+  
   const updatedFields = cleanFields({
     title,
     description,
-    quantity: parseFloat(quantity) || undefined,
+    quantity: quantity || undefined,
     price: parseFloat(price) || undefined,
     plastictype,
     metarialtype,

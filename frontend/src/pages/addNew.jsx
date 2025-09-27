@@ -1,102 +1,89 @@
-// pages/addNew.jsx
-
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-
-import UserLayout from "@/layout/clienLayout/UserLayout";
+import { addListing } from "@/config/redux/action/productAction";
+import AdminLayout from "@/layout/adminLayout/adminLayout";
 import ListingForm from "@/components/adminComponents/ListingFrom";
-import { addNewListing } from "@/config/redux/action/productAction";
-import { resetAddListingStatus } from "@/config/redux/reducers/productReducer";
-import { listingValidationSchema } from "@/Constants/listingFromFields";
+import { useListingForm } from "@/hooks/userListingFrom";
+import { listingFormFields } from "@/Constants/listingFromFields";
 
-/**
- * NewListing Component
- * 
- * Page for admins to create a new product listing.
- * Includes validation, image handling, and submission to Redux.
- * Redirects unauthenticated users to login and successful submissions to /product.
- */
-const NewListing = () => {
+const AddListing = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Redux state
-  const { loggedIn } = useSelector((state) => state.auth);
-  const { addListingLoading, addListingError, addListingSuccess } = useSelector(
+  const { addListingLoading, addListingError } = useSelector(
     (state) => state.product
   );
 
-  // Redirect unauthenticated users to login
-  useEffect(() => {
-    if (!loggedIn) router.push("/auth");
-  }, [loggedIn, router]);
+  const {
+    formData,
+    setFormData,
+    preview,
+    setPreview,
+    formError,
+    setFormError,
+    handleChange,
+    validateForm,
+    validateImages,
+  } = useListingForm();
 
-  // On successful listing creation, redirect to product page and reset status
-  useEffect(() => {
-    if (addListingSuccess) {
-      router.push("/product");
-      dispatch(resetAddListingStatus());
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Required fields except images
+    const required = listingFormFields
+      .map((f) => f.name)
+      .filter((f) => f !== "images");
+
+    if (!validateForm(required)) return;
+
+    if (Number(formData.quantity) <= 0) {
+      setFormError("❗ QUANTITY must be a positive number");
+      return;
     }
-  }, [addListingSuccess, dispatch, router]);
-
-  // React Hook Form setup with Yup validation
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
-    resolver: yupResolver(listingValidationSchema),
-    defaultValues: {
-      sourcingCondition: "",
-      washingProcess: "",
-      images: [],
-      quantity: "",
-    },
-  });
-
-  // Watch form data for live updates
-  const formData = watch();
-
-  /**
-   * Handle form submission
-   * - Filters only valid File objects from images
-   * - Creates FormData payload for API
-   * - Dispatches Redux action to add listing
-   */
-  const onSubmit = (data) => {
-    const files = (data.images || []).filter(file => file instanceof File);
-
-    if (files.length === 0) {
-      alert("At least 1 image is required");
+    if (Number(formData.price) <= 0) {
+      setFormError("❗ PRICE must be a positive number");
       return;
     }
 
-    const formPayload = new FormData();
-    files.forEach(file => formPayload.append("images", file));
+    if (!validateImages()) return;
 
-    Object.keys(data).forEach(key => {
-      if (key !== "images") formPayload.append(key, data[key]);
+    // Build FormData for API
+    const data = new FormData();
+    for (let key in formData) {
+      const value = formData[key];
+      if (value === null || value === undefined) continue;
+
+      if (key === "images" && Array.isArray(value)) {
+        value.forEach((file) => {
+          if (file instanceof File) {
+            data.append("images", file);
+          }
+        });
+      } else {
+        data.append(key, value);
+      }
+    }
+
+    dispatch(addListing(data)).then((res) => {
+      if (!res.error) router.push("/product");
     });
-
-    dispatch(addNewListing(formPayload));
   };
 
   return (
-    <UserLayout>
+    <AdminLayout>
       <ListingForm
         formData={formData}
-        setFormData={(field, value) => setValue(field, value)}
-        preview={(formData.images || []).map(file =>
-          file instanceof File ? URL.createObjectURL(file) : file
-        )}
-        setPreview={() => {}} // No-op: placeholder if needed for future
-        formError={addListingError}
+        setFormData={setFormData}
+        preview={preview}
+        setPreview={setPreview}
+        formError={addListingError || formError}
         loading={addListingLoading}
-        handleSubmit={handleSubmit(onSubmit)}
-        register={register}
-        errors={errors}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
       />
-    </UserLayout>
+    </AdminLayout>
   );
 };
 
-export default NewListing;
+export default AddListing;

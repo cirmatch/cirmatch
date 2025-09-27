@@ -68,19 +68,7 @@ export const listingFormFields = [
       .positive("Price must be positive")
       .required("Price is required"),
   },
-  {
-    name: "quantity",
-    label: "Quantity",
-    type: "number",
-    placeholder: "e.g., 50",
-    validation: yup
-      .string()
-      .required("Quantity is required")
-      .matches(
-        /^\d+(\.\d+)?\s*(Kg|Mt)$/,
-        "Quantity must be a number followed by Kg or Mt, e.g., '50 Kg'"
-      ),
-  },
+
 ];
 
 // Create validation schema dynamically from form fields
