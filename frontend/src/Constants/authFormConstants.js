@@ -15,10 +15,7 @@ const passwordRule = yup
   .string()
   .required("Password is required")
   .min(6, "Password must be at least 6 characters")
-  .matches(
-    /[!@#$%^&*(),.?":{}|<>]/,
-    "Password must contain at least one special character"
-  );
+  .max(20, "Password must be at most 20 characters")
 
 export const loginSchema = yup.object().shape({
   identifier: emailOrPhone,
