@@ -1,0 +1,509 @@
+openapi: 3.0.3
+info:
+  title: Cirmatch API
+  version: 1.0.0
+  description: API documentation for Cirmatch backend
+
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local server
+  - url: https://cirmatch.onrender.com/api/v1
+    description: Production server
+
+tags:
+  - name: Auth
+    description: Authentication routes
+  - name: User
+    description: User routes
+  - name: Admin
+    description: Admin routes
+  - name: Orders
+    description: Orders routes
+  - name: Listings
+    description: Listings routes
+  - name: Cart
+    description: Cart routes
+  - name: Contact
+    description: Contact routes
+  - name: Token
+    description: Token validation route
+
+# ================= GLOBAL SECURITY =================
+security:
+  - bearerAuth: []
+
+# ================= PATHS =================
+paths:
+  # ---------------- AUTH ----------------
+  /login:
+    post:
+      tags: [Auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+                - password
+              properties:
+                identifier:
+                  type: string
+                  description: Email or phone number
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+        '400':
+          description: Bad request
+        '401':
+          description: Invalid credentials
+
+  /register:
+    post:
+      tags: [Auth]
+      summary: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - password
+                - identifier
+              properties:
+                name:
+                  type: string
+                password:
+                  type: string
+                identifier:
+                  type: string
+                  description: Email or phone number
+      responses:
+        '200':
+          description: Successfully registered
+        '400':
+          description: User already exists or validation error
+
+  /forget-password:
+    post:
+      tags: [Auth]
+      summary: Send forget password verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
+      responses:
+        '200':
+          description: Verification code sent
+        '404':
+          description: User not found
+
+  /reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password with code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+                - code
+                - newPassword
+              properties:
+                identifier:
+                  type: string
+                code:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid or expired code
+
+  /refresh-token:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      responses:
+        '200':
+          description: Returns new access token
+        '401':
+          description: Refresh token missing or invalid
+
+  /verify-email:
+    post:
+      tags: [Auth]
+      summary: Verify user email/number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+                - code
+              properties:
+                identifier:
+                  type: string
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Verification successful
+        '400':
+          description: Invalid or expired verification code
+
+  /resend-code:
+    post:
+      tags: [Auth]
+      summary: Resend verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
+      responses:
+        '200':
+          description: Verification code resent successfully
+        '404':
+          description: User not found
+
+  # ---------------- TOKEN ----------------
+  /auth/validate:
+    get:
+      tags: [Token]
+      summary: Validate JWT token
+      responses:
+        '200':
+          description: Returns user details
+        '401':
+          description: Unauthorized
+
+  # ---------------- ADMIN ----------------
+  /getUserStats:
+    get:
+      tags: [Admin]
+      summary: Get user statistics
+      responses:
+        '200':
+          description: Returns total users and recent user growth
+
+  /makeuseradmin:
+    post:
+      tags: [Admin]
+      summary: Promote user to admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
+      responses:
+        '200':
+          description: User promoted to admin
+
+  # ---------------- ORDERS ----------------
+  /newOrder:
+    post:
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                      quantity:
+                        type: number
+                      unit:
+                        type: string
+                address:
+                  type: string
+                total:
+                  type: number
+                paymentMethod:
+                  type: string
+                note:
+                  type: string
+                identifier:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Order placed successfully
+
+  /myOrders:
+    get:
+      tags: [Orders]
+      responses:
+        '200':
+          description: Returns user orders
+
+  /order/{orderId}/delete:
+    delete:
+      tags: [Orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order deleted
+
+  /order/update/{orderId}:
+    put:
+      tags: [Orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                      quantity:
+                        type: number
+                      unit:
+                        type: string
+                address:
+                  type: string
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Order updated successfully
+
+  /allOrders:
+    get:
+      tags: [Orders, Admin]
+      responses:
+        '200':
+          description: Returns all orders
+
+  /orders/{id}:
+    get:
+      tags: [Orders, Admin]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns order detail
+
+  /orders/{orderId}/status:
+    patch:
+      tags: [Orders, Admin]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: pending, confirmed, shipped, delivered, cancelled
+      responses:
+        '200':
+          description: Order status updated
+
+  # ---------------- LISTINGS ----------------
+  /getAllListings:
+    get:
+      tags: [Listings]
+      responses:
+        '200':
+          description: Returns all listings
+
+  /getAllListings/search:
+    get:
+      tags: [Listings]
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Search results
+
+  /getAllListings/{id}:
+    get:
+      tags: [Listings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listing details
+
+  /listings:
+    post:
+      tags: [Listings]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                quantity:
+                  type: string
+                price:
+                  type: number
+                plastictype:
+                  type: string
+                metarialtype:
+                  type: string
+                location:
+                  type: string
+                sourcingCondition:
+                  type: string
+                color:
+                  type: string
+                washingProcess:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Listing created
+
+  # ---------------- CART ----------------
+  /add:
+    post:
+      tags: [Cart]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: number
+                unit:
+                  type: string
+      responses:
+        '200':
+          description: Cart updated
+
+  /usercart:
+    get:
+      tags: [Cart]
+      responses:
+        '200':
+          description: User cart returned
+
+  /clearcart:
+    delete:
+      tags: [Cart]
+      responses:
+        '200':
+          description: Cart cleared
+
+  # ---------------- CONTACT ----------------
+  /contact:
+    post:
+      tags: [Contact]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ContactDetail
+                - message
+              properties:
+                ContactDetail:
+                  type: string
+                organization:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '201':
+          description: Comment done successfully
+
+# ================= COMPONENTS =================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
