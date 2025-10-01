@@ -26,7 +26,7 @@ const CartUserSection = () => {
         className="relative flex items-center gap-1 text-gray-700 hover:text-teal-500 cursor-pointer"
       >
         <FaShoppingCart size={20} />
-        <span>Cart</span>
+        <span>Order</span>
         {cart && (
           <span className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-teal-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold">{cart.items.length}</span>
         )}

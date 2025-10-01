@@ -28,20 +28,3 @@ export const newListingSchema = Joi.object({
     .messages({ "any.only": "Invalid washing process" }),
 });
 
-// Edit listing schema (same rules, but optional fields)
-export const editListingSchema = Joi.object({
-  title: Joi.string(),
-  description: Joi.string(),
-  quantity: Joi.string()
-    .pattern(/^\d+(Kg|Mt)$/i)
-    .messages({
-      "string.pattern.base": "Quantity must be like '5kg' or '5mt'",
-    }),
-  price: Joi.number().positive(),
-  location: Joi.string(),
-  plastictype: Joi.string(),
-  metarialtype: Joi.string(),
-  sourcingCondition: Joi.string().valid("Post Consumer", "Post Industrial", "Mixed"),
-  color: Joi.string().allow(""),
-  washingProcess: Joi.string().valid("Cold Wash", "Hot Wash", "Unwashed"),
-});

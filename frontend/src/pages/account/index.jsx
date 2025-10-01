@@ -8,6 +8,7 @@ import { useUserOrders } from "@/hooks/useUserOrders";
 import OrderCard from "@/components/Account/OrderCard";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import Loading from "@/components/Loading";
 
 export default function UserDetailsAndOrderStatus() {
   const { userOrder, isLoading, isError, message } = useUserOrders();
@@ -25,15 +26,10 @@ export default function UserDetailsAndOrderStatus() {
 
             {/* Loading */}
             {isLoading && (
-              <p className="text-gray-500 text-lg text-center">Loading your orders...</p>
+              <Loading/>
             )}
 
-            {/* Error */}
-            {isError && (
-              <p className="text-red-600 text-lg text-center">
-                {message || "Error loading orders."}
-              </p>
-            )}
+
 
             {/* Orders */}
             {userOrder.length > 0 ? (
@@ -76,7 +72,7 @@ export default function UserDetailsAndOrderStatus() {
                     No Orders Yet
                   </h2>
                   <p className="text-gray-500 text-center">
-                    You haven't placed any orders yet. Start shopping to see your orders here!
+                    {message} 
                   </p>
                 </div>
               </div>

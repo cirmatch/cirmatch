@@ -2,106 +2,115 @@ import Cart from '../models/cart.js';
 import Listing from '../models/listing.js'; // For product info populate
 import mongoose from 'mongoose';
 
-// Helper function to convert quantities between units
+/**
+ * Helper function to convert quantities between units (Kg <-> Mt)
+ * Ensures stock calculations are consistent regardless of unit differences
+ */
 const convertQuantity = (qty, fromUnit, toUnit) => {
   if (fromUnit === toUnit) return qty;
   if (fromUnit === "Kg" && toUnit === "Mt") return qty / 1000;
   if (fromUnit === "Mt" && toUnit === "Kg") return qty * 1000;
-  return qty;
+  return qty; // fallback: no conversion
 };
 
+/**
+ * Add a product to user's cart
+ * - Validates productId, quantity, and unit
+ * - Checks stock availability based on Listing quantity
+ * - Updates cart if product exists, otherwise creates a new cart
+ * - Returns updated cart with populated product info and total price
+ */
 export const addToCart = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { quantity, productId, unit } = req.body;
+  const userId = req.user.id; // Authenticated user
+  const { quantity, productId, unit } = req.body;
+  
+  if (!mongoose.Types.ObjectId.isValid(productId))
+    return res.status(400).json({ message: "Invalid productId" });
 
-    if (!mongoose.Types.ObjectId.isValid(productId))
-      return res.status(400).json({ message: "Invalid productId" });
+  if (!quantity || quantity <= 0)
+    return res.status(400).json({ message: "Quantity must be greater than zero" });
 
-    if (!quantity || quantity <= 0)
-      return res.status(400).json({ message: "Quantity must be greater than zero" });
+  if (!unit || !["Kg", "Mt"].includes(unit))
+    return res.status(400).json({ message: 'Unit must be either "Kg" or "Mt"' });
 
-    if (!unit || !["Kg", "Mt"].includes(unit))
-      return res.status(400).json({ message: 'Unit must be either "Kg" or "Mt"' });
+  const product = await Listing.findById(productId);
+  if (!product) return res.status(404).json({ message: "Product not found" });
 
-    const product = await Listing.findById(productId);
-    if (!product) return res.status(404).json({ message: "Product not found" });
+  const match = product.quantity.match(/^(\d+(\.\d+)?)\s*(Kg|Mt)$/);
+  if (!match) return res.status(500).json({ message: "Invalid product quantity format" });
 
-    // Parse listing quantity (e.g., "10 Mt" or "500 Kg")
-    const match = product.quantity.match(/^(\d+(\.\d+)?)\s*(Kg|Mt)$/);
-    if (!match) return res.status(500).json({ message: "Invalid product quantity format" });
+  const availableQtyListing = parseFloat(match[1]);
+  const listingUnit = match[3]; // 'Kg' or 'Mt'
 
-    const availableQtyListing = parseFloat(match[1]);
-    const listingUnit = match[3]; // 'Kg' or 'Mt'
+  const qtyInListingUnit = convertQuantity(quantity, unit, listingUnit);
 
-    // Convert frontend quantity to listing unit for stock check
-    const qtyInListingUnit = convertQuantity(quantity, unit, listingUnit);
+  if (qtyInListingUnit > availableQtyListing)
+    return res.status(400).json({ message: "Cannot add more than available stock" });
 
-    if (qtyInListingUnit > availableQtyListing)
-      return res.status(400).json({ message: "Cannot add more than available stock" });
+  let cart = await Cart.findOne({ userId });
 
-    let cart = await Cart.findOne({ userId });
-
-    if (!cart) {
-      // New cart, save quantity and unit as frontend selected
-      cart = new Cart({
-        userId,
-        items: [{ productId, quantity, unit }],
-      });
-    } else {
-      const itemIndex = cart.items.findIndex(item => item.productId.equals(productId));
-      if (itemIndex > -1) {
-        let cartItem = cart.items[itemIndex];
-
-        // Convert existing cart quantity to listing unit for stock check
-        const existingQtyInListing = convertQuantity(cartItem.quantity, cartItem.unit, listingUnit);
-        const newTotalInListing = existingQtyInListing + qtyInListingUnit;
-
-        if (newTotalInListing > availableQtyListing)
-          return res.status(400).json({ message: "Cannot add more than available stock" });
-
-        // Update cart quantity in frontend unit
-        cartItem.quantity += quantity;
-        cartItem.unit = unit;
-      } else {
-        // Add new item in frontend unit
-        cart.items.push({ productId, quantity, unit });
-      }
-    }
-
-    await cart.save();
-    await cart.populate("items.productId");
-
-    // Optional: calculate total price per cart item based on listing price and cart unit
-    const cartWithPrice = cart.toObject();
-    cartWithPrice.items = cartWithPrice.items.map(item => {
-      const listingQty = convertQuantity(item.quantity, item.unit, listingUnit);
-      const price = listingQty * product.price; // price in listing unit
-      return { ...item, totalPrice: parseFloat(price.toFixed(2)) };
+  if (!cart) {
+    cart = new Cart({
+      userId,
+      items: [{ productId, quantity, unit }],
     });
+  } else {
+const itemIndex = cart.items.findIndex(item => item.productId.equals(productId));
 
-    return res.status(200).json({ message: "Cart updated", cart: cartWithPrice });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Server error" });
+if (itemIndex > -1) {
+  let cartItem = cart.items[itemIndex];
+
+  // 1️⃣ Convert existing cart quantity to listing unit for stock check
+  const existingQtyInListing = convertQuantity(cartItem.quantity, cartItem.unit, listingUnit);
+
+  // 2️⃣ Convert new quantity to listing unit
+  const newQtyInListing = convertQuantity(quantity, unit, listingUnit);
+
+  // 3️⃣ Check if total exceeds available stock
+  if (existingQtyInListing + newQtyInListing > availableQtyListing)
+    return res.status(400).json({ message: "Cannot add more than available stock" });
+
+  // 4️⃣ Convert new quantity to **cart item's unit** and add it
+  const newQtyInCartUnit = convertQuantity(quantity, unit, cartItem.unit);
+  cartItem.quantity += newQtyInCartUnit;
+
+  // 5️⃣ Keep the cart item's unit unchanged
+  // cartItem.unit = cartItem.unit;  // no need, it's already same
+} else {
+  // product not in cart, just add
+  cart.items.push({ productId, quantity, unit });
+}
   }
+
+  await cart.save();
+  await cart.populate("items.productId");
+
+  const cartWithPrice = cart.toObject();
+  cartWithPrice.items = cartWithPrice.items.map(item => {
+    const listingQty = convertQuantity(item.quantity, item.unit, listingUnit);
+    const price = listingQty * product.price;
+    return { ...item, totalPrice: parseFloat(price.toFixed(2)) };
+  });
+
+  return res.status(200).json({ message: "Cart updated", cart: cartWithPrice });
 };
 
-
-// Remove a product from user's cart
+/**
+ * Remove a product (or specific unit) from user's cart
+ * - If unit query is provided, only that unit is removed
+ * - Otherwise, removes all entries of the product
+ */
 export const removeFromCart = async (req, res) => {
   const userId = req.user.id;
   const { productId } = req.params;
-  const { unit } = req.query; // pass ?unit=kg or ?unit=mt
+  const { unit } = req.query;
 
   if (!mongoose.Types.ObjectId.isValid(productId)) {
     return res.status(400).json({ message: 'Invalid productId' });
   }
 
   const cart = await Cart.findOne({ userId });
-  if (!cart) {
-    return res.status(404).json({ message: 'Cart not found' });
-  }
+  if (!cart) return res.status(404).json({ message: 'Cart not found' });
 
   cart.items = cart.items.filter(item => {
     if (unit) {
@@ -116,32 +125,37 @@ export const removeFromCart = async (req, res) => {
   return res.status(200).json({ message: 'Product removed from cart', cart });
 };
 
-// Get current user's cart with populated product info
+/**
+ * Get current user's cart with populated product information
+ */
 export const getCart = async (req, res) => {
   const userId = req.user.id;
-  
+
   const cart = await Cart.findOne({ userId }).populate('items.productId');
 
-  if (!cart) {
-    return res.status(404).json({ message: 'Cart not found' });
-  }
+  if (!cart) return res.status(404).json({ message: 'Cart not found' });
+
   return res.status(200).json({ cart });
 };
 
-// Clear all items from user's cart
+/**
+ * Clear all items from user's cart
+ */
 export const clearCart = async (req, res) => {
   const userId = req.user.id;
 
   const result = await Cart.findOneAndDelete({ userId });
 
-  if (!result) {
-    return res.status(404).json({ message: 'Cart not found' });
-  }
+  if (!result) return res.status(404).json({ message: 'Cart not found' });
 
   return res.status(200).json({ message: 'Cart deleted successfully' });
 };
 
-// cart/update-quantities
+/**
+ * Update quantities and units for items in user's cart
+ * - Accepts an array of items with productId, quantity, and unit
+ * - Updates only valid items
+ */
 export const updateCartQuantities = async (req, res) => {
   const userId = req.user.id;
   const { items } = req.body;
@@ -151,14 +165,10 @@ export const updateCartQuantities = async (req, res) => {
   }
 
   const cart = await Cart.findOne({ userId });
-  if (!cart) {
-    return res.status(404).json({ message: "Cart not found" });
-  }
+  if (!cart) return res.status(404).json({ message: "Cart not found" });
 
   for (const { productId: cartItemId, quantity, unit } of items) {
-    if (!mongoose.Types.ObjectId.isValid(cartItemId)) {
-      continue; // skip invalid ids
-    }
+    if (!mongoose.Types.ObjectId.isValid(cartItemId)) continue;
 
     const item = cart.items.id(cartItemId);
 

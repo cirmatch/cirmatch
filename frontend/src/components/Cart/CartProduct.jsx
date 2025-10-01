@@ -98,13 +98,7 @@ export default function CartProduct() {
         transition={{ duration: 0.5 }}
       >
         <CartHeader onClearCart={handleClearCart} />
-
-        {/* Table Header */}
-        <div className="hidden md:grid grid-cols-12 text-sm text-gray-600 font-semibold border-b pb-2 mb-4">
-          <span className="col-span-6">Product</span>
-          <span className="col-span-2 text-center">Quantity</span>
-          <span className="col-span-2 text-right">Total</span>
-        </div>
+        <hr />
 
         <AnimatePresence>
           {cart.items.map((item, index) => (

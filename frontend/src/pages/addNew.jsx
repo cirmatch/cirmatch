@@ -6,10 +6,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import UserLayout from "@/layout/clienLayout/UserLayout";
-import ListingForm from "@/components/adminComponents/ListingFrom";
+import ListingForm from "@/components/adminComponents/ListingFrom/addlistingFrom";
 import { addNewListing } from "@/config/redux/action/productAction";
 import { resetAddListingStatus } from "@/config/redux/reducers/productReducer";
 import { listingValidationSchema } from "@/Constants/listingFromFields";
+import toast from "react-hot-toast";
 
 /**
  * NewListing Component
@@ -36,12 +37,24 @@ const NewListing = () => {
   }, [loggedIn, router]);
 
   // On successful listing creation, redirect to product page and reset status
-  useEffect(() => {
-    if (addListingSuccess) {
-      router.push("/product");
-      dispatch(resetAddListingStatus());
-    }
-  }, [addListingSuccess, dispatch, router]);
+useEffect(() => {
+  if (addListingSuccess) {
+    toast.success("Listing added successfully!"); // show success
+    const timer = setTimeout(() => {
+      router.push("/product"); // redirect after 2 seconds
+      dispatch(resetAddListingStatus()); // reset status
+    }, 2000);
+    return () => clearTimeout(timer);
+  }
+}, [addListingSuccess, dispatch, router]);
+
+useEffect(() => {
+  if (addListingError) {
+    toast.error(addListingError); // show error toast
+    dispatch(resetAddListingStatus()); // reset status so user can try again
+  }
+}, [addListingError, dispatch]);
+
 
   // React Hook Form setup with Yup validation
   const {

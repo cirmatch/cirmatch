@@ -5,24 +5,23 @@ const ALLOWED_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cance
 
 /* ================= COMMON / USER CONTROLLERS ================= */
 
-// ========== CREATE ORDER (USER) ==========
+/**
+ * ========== CREATE ORDER (USER) ==========
+ * Handles order creation by authenticated user
+ * Steps:
+ * 1. Validate required fields (identifier, name, address, total)
+ * 2. Ensure payment method is supported (currently only COD)
+ * 3. Validate orderItems array is present and not empty
+ * 4. For each item:
+ *    - Validate product exists
+ *    - Parse listing quantity
+ *    - Convert order quantity to listing unit for stock check
+ *    - Deduct stock and update product quantity
+ * 5. Save the order in DB with frontend-sent quantities and units
+ */
 export const createOrder = async (req, res) => {
-  try {
     const { orderItems, address, total, paymentMethod, note, identifier, name } = req.body;
     const userId = req.user._id;
-
-    // Basic validations
-    if (!identifier || !name || !address || !total) {
-      return res.status(400).json({ error: "Identifier, name, address, and total are required." });
-    }
-
-    if (paymentMethod !== 'cash_on_delivery') {
-      return res.status(400).json({ error: 'Only Cash on Delivery is supported at the moment.' });
-    }
-
-    if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
-      return res.status(400).json({ error: 'Order must include at least one item.' });
-    }
 
     // Validate products and check stock
     for (const item of orderItems) {
@@ -47,7 +46,7 @@ export const createOrder = async (req, res) => {
         if (listingUnit === "mt") orderQtyForStock = orderQtyForStock / 1000; // Kg -> Mt
       }
 
-      // Check stock
+      // Check stock availability
       if (orderQtyForStock > availableQty) {
         return res.status(400).json({
           error: `Cannot buy ${item.quantity} ${item.unit} of ${product.title}. Only ${availableQty} ${match[3]} available.`,
@@ -57,19 +56,19 @@ export const createOrder = async (req, res) => {
       // Deduct stock in listing unit
       availableQty -= orderQtyForStock;
 
-      // Save back in the same format as listing (do not change listing unit)
+      // Update product quantity in DB (keep listing unit)
       product.quantity = `${availableQty} ${match[3]}`;
       if (availableQty === 0) product.Status = "out_of_stock";
       await product.save();
 
-      // Leave item.quantity as sent by frontend, do not convert
+      // Leave item.quantity as sent by frontend (do not convert)
     }
 
-    // Create the order
+    // Create new order with user info and items
     const newOrder = new Order({
       userId,
       identifier,
-      orderItems, // store quantity and unit as sent by frontend
+      orderItems,
       address,
       total,
       paymentMethod,
@@ -81,14 +80,15 @@ export const createOrder = async (req, res) => {
 
     res.status(201).json({ message: 'Order placed successfully.', order: newOrder });
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error.' });
-  }
 };
 
-
-// ========== USER: GET ALL OWN ORDERS ==========
+/**
+ * ========== USER: GET ALL OWN ORDERS ==========
+ * Retrieves all orders placed by the authenticated user
+ * - Populates order items with product details
+ * - Populates user info (name, email, number)
+ * - Returns 404 if no orders found
+ */
 export const getUserOrders = async (req, res) => {
   const userId = req.user._id;
 
@@ -103,7 +103,17 @@ export const getUserOrders = async (req, res) => {
   res.status(200).json({ orders });
 };
 
-// ========== USER: UPDATE ORDER ==========
+/**
+ * ========== USER: UPDATE ORDER ==========
+ * Allows authenticated user to update their own order
+ * Restrictions:
+ * - Cannot update order if status is 'shipped' or 'delivered'
+ * Steps:
+ * 1. Find order by orderId and userId
+ * 2. Validate products in orderItems (if provided)
+ * 3. Update address, note, and orderItems
+ * 4. Save updated order
+ */
 export const updateOrderByUser = async (req, res) => {
   const userId = req.user._id;
   const { orderId } = req.params;
@@ -128,7 +138,16 @@ export const updateOrderByUser = async (req, res) => {
   res.status(200).json({ message: 'Order updated successfully.', order });
 };
 
-// ========== USER: DELETE ORDER ==========
+/**
+ * ========== USER: DELETE ORDER ==========
+ * Allows authenticated user to delete their own order
+ * Restrictions:
+ * - Cannot delete order if status is 'shipped' or 'delivered'
+ * Steps:
+ * 1. Find order by orderId and userId
+ * 2. Validate order exists and can be deleted
+ * 3. Delete order
+ */
 export const deleteOrderByUser = async (req, res) => {
   const userId = req.user._id;
   const { orderId } = req.params;

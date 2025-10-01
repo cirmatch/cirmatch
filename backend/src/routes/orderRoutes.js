@@ -2,7 +2,7 @@ import express from 'express';
 import { authenticate, authorizeAdmin } from '../middleware/auth.js';
 import { ordervalidate } from '../middleware/validateRequest.js';
 import wrapAsync from '../utils/wrapAsync.js';
-import { createOrderSchema, updateOrderSchema } from '../validations/orderValidation.js';
+import { createOrderSchema } from '../validations/orderValidation.js';
 import { createOrder, deleteOrderByUser, getUserOrders, updateOrderByUser } from '../controllers/orderController.js';
 import { getAllOrders, getOrderDetail, updateOrderStatus } from '../controllers/Admin/orderAdminController.js';
 
@@ -20,7 +20,7 @@ router.get('/myOrders', authenticate, wrapAsync(getUserOrders));
 router.delete('/order/:orderId/delete', authenticate, wrapAsync(deleteOrderByUser));
 
 // Update order by user (only their own orders)
-router.put('/order/update/:orderId', authenticate, ordervalidate(updateOrderSchema), wrapAsync(updateOrderByUser));
+router.put('/order/update/:orderId', authenticate,  wrapAsync(updateOrderByUser));
 
 // ================= ADMIN ROUTES =================
 
