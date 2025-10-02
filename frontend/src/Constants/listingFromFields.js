@@ -1,6 +1,13 @@
 import * as yup from "yup";
 
 export const listingFormFields = [
+    {
+    name: "sellerName",
+    label: "Seller Name",
+    type: "text",
+    placeholder: "Enter Your Name",
+    validation: yup.string().required("Name is required"),
+  },
   {
     name: "title",
     label: "Title",

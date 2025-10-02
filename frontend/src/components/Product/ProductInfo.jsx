@@ -79,6 +79,9 @@ export function ProductInfo({
       {/* Product Specifications */}
       <div className="space-y-2 text-lg mb-6">
         <p>
+          <span className="font-semibold">Seller Name:</span> {listing.sellerName}
+        </p>
+        <p>
           <span className="font-semibold">Plastic Type:</span> {listing.plastictype}
         </p>
         <p>
