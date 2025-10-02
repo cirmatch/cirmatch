@@ -29,6 +29,7 @@ export const deleteProduct = async (req, res) => {
  */
 export const editListing = async (req, res) => {
   const {
+    sellerName,
     title,
     description,
     quantity,
@@ -42,6 +43,7 @@ export const editListing = async (req, res) => {
   } = req.body;
   
   const updatedFields = cleanFields({
+    sellerName,
     title,
     description,
     quantity: quantity || undefined,

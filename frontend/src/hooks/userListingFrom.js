@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export const useListingForm = (initial = {}) => {
   const [formData, setFormData] = useState({
+    sellerName: "",
     title: "",
     description: "",
     plastictype: "",

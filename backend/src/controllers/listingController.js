@@ -1,12 +1,6 @@
 import httpStatus from "http-status";
 import Listing from "../models/listing.js";
 
-/**
- * Helper: Remove undefined fields from an object
- * Ensures only defined fields are sent in update queries.
- */
-const cleanFields = (obj) =>
-  Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined));
 
 /**
  * Get all listings (paginated)
@@ -63,6 +57,7 @@ export const newListing = async (req, res) => {
   }
 
   const {
+    sellerName,
     title,
     description,
     quantity,
@@ -82,6 +77,7 @@ export const newListing = async (req, res) => {
   }));
 
   const newItem = new Listing({
+    sellerName,
     title,
     description,
     quantity,

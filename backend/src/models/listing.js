@@ -6,6 +6,8 @@ import mongoose, { Schema } from "mongoose";
  */
 const listingSchema = new Schema(
   {
+    // sellerName of the listing
+    sellerName: { type: String, required: true },
     // Title of the listing
     title: { type: String, required: true },
 
