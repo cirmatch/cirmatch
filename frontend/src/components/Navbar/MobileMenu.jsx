@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { categories, navLinks } from '../../Constants/navLinks';
 import { FaBars, FaShoppingCart, FaUser } from 'react-icons/fa';
 import ButtonLink from '../Button/button';
 import { useDispatch, useSelector } from 'react-redux';
-import { reset } from '@/config/redux/reducers/authReducer';
-import { clearTokens } from '@/utils/tokenHelper';
 import { useRouter } from 'next/router';
-import { FiInbox } from 'react-icons/fi';
+import { logoutUser } from '@/config/redux/action/authAction';
 
 const MobileMenu = () => {
   const router = useRouter();
@@ -17,8 +15,7 @@ const MobileMenu = () => {
   const { loggedIn, user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    clearTokens();
-    dispatch(reset()); 
+    dispatch(logoutUser()); 
     router.push("/auth"); 
   };
 

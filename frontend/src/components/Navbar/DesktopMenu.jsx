@@ -3,9 +3,8 @@ import { navLinks } from '../../Constants/navLinks';
 import CategoriesDropdown from './CategoriesDropdown';
 import ButtonLink from '../Button/button';
 import { useDispatch, useSelector } from 'react-redux';
-import { reset } from '@/config/redux/reducers/authReducer';
-import { clearTokens } from '@/utils/tokenHelper';
 import { useRouter } from 'next/router';
+import { logoutUser } from '@/config/redux/action/authAction';
 
 const DesktopMenu = () => {
   const router = useRouter();
@@ -14,8 +13,7 @@ const DesktopMenu = () => {
   const { loggedIn, user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    clearTokens(); 
-    dispatch(reset()); 
+    dispatch(logoutUser()); 
     router.push("/"); 
   };
 
@@ -56,7 +54,7 @@ const DesktopMenu = () => {
             onClick={handleLogout}
             className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600 cursor-pointer"
           >
-            Logout
+            Log Out
           </button>
         ) : (
           <div className="flex gap-3">

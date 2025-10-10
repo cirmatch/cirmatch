@@ -91,7 +91,7 @@ export const login = async (req, res) => {
   user.refreshToken = refreshToken;
   await user.save();
 
-  res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict", maxAge: 7*24*60*60*1000 });
+  res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "None", maxAge: 7*24*60*60*1000 });
   res.status(httpStatus.OK).json({ message: "Logged in successfully", accessToken, user });
 };
 
@@ -206,8 +206,6 @@ export const verifyIdentifier = async (req, res) => {
   }
 
   user.isVerified = true;
-  user.verificationCode = undefined;
-  user.verificationCodeExpires = undefined;
   await user.save();
 
   res.status(httpStatus.OK).json({ message: "Verification successful" });
@@ -236,4 +234,33 @@ export const resendCode = async (req, res) => {
   else { await sendVerificationSMS(identifier, code).catch(console.error); }
 
   res.status(httpStatus.OK).json({ message: "Verification code resent successfully" });
+};
+
+
+// ===================== LOGOUT =====================
+export const logout = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) return res.status(200).json({ message: "Already logged out" });
+
+    // Find user with this refresh token
+    const user = await User.findOne({ refreshToken: token });
+    if (user) {
+      user.refreshToken = null; // remove from DB
+      await user.save();
+    }
+
+    // Clear the cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      path: "/",
+    });
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Logout failed" });
+  }
 };

@@ -115,7 +115,7 @@ export const logoutUser = createAsyncThunk(
   "user/logout",
   async (_, thunkAPI) => {
     try {
-      clearTokens(); // just removes accessToken
+       const response = await client.post("/logout", {}, { withCredentials: true });
       return thunkAPI.fulfillWithValue("Logged out successfully");
     } catch (error) {
       return thunkAPI.rejectWithValue("Logout failed");

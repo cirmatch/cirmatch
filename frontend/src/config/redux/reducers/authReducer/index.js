@@ -152,7 +152,10 @@ const authSlice = createSlice({
       })
 
       // LOGOUT
-      .addCase(logoutUser.fulfilled, () => initialState)
+      .addCase(logoutUser.fulfilled, (state) => {
+        localStorage.clear(); 
+        return initialState; 
+      })
 
       // LOGIN FROM TOKEN
       
