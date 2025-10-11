@@ -33,9 +33,9 @@ export const addCart = createAsyncThunk(
 // ❌ Remove item from cart
 export const removeFromCart = createAsyncThunk(
   "Cart/removeFromCart",
-  async ({ productId }, thunkApi) => {
+  async ({ cartId }, thunkApi) => {
     try {
-      const response = await client.delete(`/remove/${ productId }`);
+      const response = await client.delete(`/remove/${ cartId }`);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       return thunkApi.rejectWithValue(extractErrorMessage(error));

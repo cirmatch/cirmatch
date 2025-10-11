@@ -101,28 +101,43 @@ if (itemIndex > -1) {
  * - Otherwise, removes all entries of the product
  */
 export const removeFromCart = async (req, res) => {
-  const userId = req.user.id;
-  const { productId } = req.params;
-  const { unit } = req.query;
+    const userId = req.user._id;           
+    const cartItemId = req.params.cartId; 
 
-  if (!mongoose.Types.ObjectId.isValid(productId)) {
-    return res.status(400).json({ message: 'Invalid productId' });
-  }
-
-  const cart = await Cart.findOne({ userId });
-  if (!cart) return res.status(404).json({ message: 'Cart not found' });
-
-  cart.items = cart.items.filter(item => {
-    if (unit) {
-      return !(item.productId.equals(productId) && item.unit === unit);
+    // Validate cart item _id
+    if (!mongoose.Types.ObjectId.isValid(cartItemId)) {
+      console.log('Invalid cart item _id');
+      return res.status(400).json({ message: 'Invalid cart item ID' });
     }
-    return !item.productId.equals(productId);
-  });
 
-  await cart.save();
-  await cart.populate('items.productId');
+    const cartItemObjectId = new mongoose.Types.ObjectId(cartItemId);
 
-  return res.status(200).json({ message: 'Product removed from cart', cart });
+    // 1️⃣ Fetch cart BEFORE removal
+    const cartBefore = await Cart.findOne({ userId });
+    if (!cartBefore) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // 2️⃣ Remove item using $pull on _id
+    const result = await Cart.updateOne(
+      { userId },
+      { $pull: { items: { _id: cartItemObjectId } } }
+    );
+
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: 'Cart item not found in cart' });
+    }
+
+    // 3️⃣ Fetch cart AFTER removal and populate product details
+    const cartAfter = await Cart.findOne({ userId }).populate('items.productId');
+    console.log('Cart after removal:', cartAfter.items);
+
+    // 4️⃣ Return updated cart
+    return res.status(200).json({
+      message: 'Cart item removed successfully',
+      cart: cartAfter
+    });
 };
 
 /**

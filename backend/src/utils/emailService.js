@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import axios from "axios";
-
-
+import dotenv from "dotenv";
+dotenv.config({ path: "../../.env" });
 
 export const sendVerificationEmail = async (toEmail, code) => {
   const verificationEmailHtml = `
@@ -115,17 +115,22 @@ export const sendVerificationEmail = async (toEmail, code) => {
 
 export const sendVerificationSMS = async (toNumber, code) => {
   try {
+    // Ensure Bangladeshi number format
     if (!toNumber.startsWith("88")) {
       toNumber = "88" + toNumber;
     }
-    const response = await axios.post("http://bulksmsbd.net/api/smsapi", {
-      api_key: process.env.SMS_API_KEY,  
-      senderid: process.env.SMS_SENDER_ID, 
-      number: toNumber,
-      message: `Your Cirmatch verification code is: ${code}. It will expire in 10 minutes.`,
-    });
+    console.log(process.env.SMS_API_KEY)
+        console.log(process.env.SMS_SENDER_ID)
+    // Construct the URL with all required parameters
+    const url = `http://bulksmsbd.net/api/smsapi?api_key=${process.env.SMS_API_KEY}&type=text&number=${toNumber}&senderid=${process.env.SMS_SENDER_ID}&message=${encodeURIComponent(`Your Cirmatch OTP is ${code}. It will expire in 10 minutes.`)}`;
 
-    console.log("SMS sent:", response.data);
+    const response = await axios.get(url);
+
+    console.log("SMS API Response:", response.data);
+
+    if (response.data.response_code !== 202) {
+      throw new Error(`SMS failed: ${response.data.error_message}`);
+    }
   } catch (error) {
     console.error("SMS sending failed:", error.message);
     throw new Error("Failed to send SMS");

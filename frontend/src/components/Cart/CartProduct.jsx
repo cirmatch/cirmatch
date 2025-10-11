@@ -37,7 +37,7 @@ export default function CartProduct() {
     }
   }, [cart]);
 
-  const handleRemove = (productId) => dispatch(removeFromCart({ productId }));
+  const handleRemove = (cartId) => dispatch(removeFromCart({ cartId }));
   const handleClearCart = () => {
     if (window.confirm("Are you sure you want to clear your entire cart?")) {
       dispatch(clearCart());

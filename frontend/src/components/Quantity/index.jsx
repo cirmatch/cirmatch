@@ -60,7 +60,7 @@ const NumberBox = ({
 
   // Increment quantity by 0.001 (max 3 decimals)
   const increment = () => {
-    const newVal = Math.min(quantity + 0.1, effectiveMax);
+    const newVal = Math.min(quantity + 1, effectiveMax);
     const rounded = parseFloat(newVal.toFixed(3));
     setQuantity(rounded);
     setInputValue(rounded.toString());
@@ -68,7 +68,7 @@ const NumberBox = ({
 
   // Decrement quantity by 0.001 (max 3 decimals)
   const decrement = () => {
-    const newVal = Math.max(quantity - 0.1, 0.1);
+    const newVal = Math.max(quantity - 1, 1);
     const rounded = parseFloat(newVal.toFixed(3));
     setQuantity(rounded);
     setInputValue(rounded.toString());
