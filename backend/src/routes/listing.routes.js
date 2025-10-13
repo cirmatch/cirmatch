@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
-import { storage } from "../cloudinary.js";
+
 
 // Controllers
 import { getAlllisting, getListingDetail, newListing, search } from "../controllers/listingController.js";
@@ -13,13 +13,14 @@ import { newListingSchema } from "../validations/listingValidation.js";
 import wrapAsync from "../utils/wrapAsync.js";
 
 const router = Router();
+const storage = multer.memoryStorage(); 
 const upload = multer({ 
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // max 5MB per file
+  limits: { fileSize: 15 * 1024 * 1024 } // max 1MB per file
 });
 
 /* ==============================
-   🌐 Public/User Routes
+   Public/User Routes
    Accessible by any authenticated user or public
 ============================== */
 router.get("/getAllListings", wrapAsync(getAlllisting));
@@ -36,7 +37,7 @@ router.post(
 );
 
 /* ==============================
-   🛡️ Admin / Owner Routes
+    Admin / Owner Routes
    Only accessible by admin or owner
 ============================== */
 

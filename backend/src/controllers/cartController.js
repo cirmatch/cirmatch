@@ -106,7 +106,6 @@ export const removeFromCart = async (req, res) => {
 
     // Validate cart item _id
     if (!mongoose.Types.ObjectId.isValid(cartItemId)) {
-      console.log('Invalid cart item _id');
       return res.status(400).json({ message: 'Invalid cart item ID' });
     }
 

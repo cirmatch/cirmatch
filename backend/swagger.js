@@ -24,7 +24,5 @@ export const swaggerDocs = (app) => {
     })(req, res, next);
   });
 
-  console.log(
-    `📄 Swagger Docs available at: http://localhost:${process.env.PORT || 5000}/api-docs?key=${process.env.SWAGGER_KEY}`
-  );
+
 };
