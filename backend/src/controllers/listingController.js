@@ -23,14 +23,17 @@ const compressImage = async (buffer) => {
   return output;
 };
 
-const uploadToCloudinary = async (buffer) => {
-  const tempPath = `./temp_${Date.now()}.jpg`;
-  fs.writeFileSync(tempPath, buffer);
-  const result = await cloudinary.uploader.upload(tempPath, {
-    folder: "cirmatch",
+const uploadToCloudinary = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "cirmatch" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    stream.end(buffer);
   });
-  fs.unlinkSync(tempPath);
-  return result;
 };
 /**
  * Get all listings (paginated)
@@ -80,57 +83,45 @@ export const getListingDetail = async (req, res) => {
  * Supports uploading 1–5 images
  */
 export const newListing = async (req, res) => {
-  if (!req.files || req.files.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "At least 1 image is required" });
-  }
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "At least 1 image is required" });
+    }
 
-  const {
-    title,
-    description,
-    quantity,
-    price,
-    plastictype,
-    metarialtype,
-    location,
-    sourcingCondition,
-    color,
-    washingProcess,
-  } = req.body;
+    const {
+      title, description, quantity, price, plastictype,
+      metarialtype, location, sourcingCondition,
+      color, washingProcess
+    } = req.body;
 
-  // Compress + Upload all images
-  const imageUploads = [];
-  for (const file of req.files) {
-    const compressed = await compressImage(file.buffer);
-    const uploadRes = await uploadToCloudinary(compressed);
-    imageUploads.push({
-      path: uploadRes.secure_url,
-      filename: uploadRes.public_id,
+    const imageUploads = await Promise.all(
+      req.files.map(async (file) => {
+        let bufferToUpload = file.buffer;
+        if (file.buffer.length > 2 * 1024 * 1024) { // compress only if >500KB
+          bufferToUpload = await compressImage(file.buffer);
+        }
+        const uploadRes = await uploadToCloudinary(bufferToUpload);
+        return { path: uploadRes.secure_url, filename: uploadRes.public_id };
+      })
+    );
+
+    const newItem = new Listing({
+      title,
+      description,
+      quantity,
+      price: parseFloat(price) || undefined,
+      location,
+      plastictype,
+      metarialtype,
+      sourcingCondition,
+      color,
+      washingProcess,
+      images: imageUploads,
+      author: req.user._id,
     });
-  }
 
-  const newItem = new Listing({
-    title,
-    description,
-    quantity,
-    price: parseFloat(price) || undefined,
-    location,
-    plastictype,
-    metarialtype,
-    sourcingCondition,
-    color,
-    washingProcess,
-    images: imageUploads,
-    author: req.user._id,
-  });
+    await newItem.save();
 
-  await newItem.save();
-
-  res.status(201).json({
-    message: "Listing created successfully",
-    listing: newItem,
-  });
+    res.status(201).json({ message: "Listing created successfully", listing: newItem });
 };
 
 /**

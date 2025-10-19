@@ -29,7 +29,16 @@ export const register = async (req, res) => {
   const query = isEmail ? { email: identifier } : { number: identifier };
 
   const existingUser = await User.findOne(query);
-  if (existingUser) return res.status(httpStatus.BAD_REQUEST).json({ message: "User already exists" });
+  if (existingUser) {
+  if (existingUser.isVerified) {
+    // Case 1: User exists and is verified
+    return res.status(400).json({ message: "User already exists" });
+  } else {
+    // Case 2: User exists but not verified, delete the user
+    await User.deleteOne({ _id: existingUser._id });
+    // You can continue with registration after this
+  }
+}
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const code = generateVerificationCode();
