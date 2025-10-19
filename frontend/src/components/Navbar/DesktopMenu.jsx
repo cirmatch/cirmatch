@@ -5,6 +5,7 @@ import ButtonLink from '../Button/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { logoutUser } from '@/config/redux/action/authAction';
+import { useEffect } from 'react';
 
 const DesktopMenu = () => {
   const router = useRouter();
@@ -16,6 +17,12 @@ const DesktopMenu = () => {
     dispatch(logoutUser()); 
     router.push("/"); 
   };
+
+  useEffect(() => {
+    if (user && !user.isVerified) {
+      handleLogout();
+    }
+  }, [user]); 
 
   const filteredLinks = navLinks.filter(link => {
     if (link.adminOnly && (!user || user.role !== "admin")) {

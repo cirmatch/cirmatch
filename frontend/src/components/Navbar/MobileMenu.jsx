@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {  useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { categories, navLinks } from '../../Constants/navLinks';
 import { FaBars, FaShoppingCart, FaUser } from 'react-icons/fa';
 import ButtonLink from '../Button/button';
@@ -18,6 +18,12 @@ const MobileMenu = () => {
     dispatch(logoutUser()); 
     router.push("/auth"); 
   };
+  
+  useEffect(() => {
+    if (user && !user.isVerified) {
+      handleLogout();
+    }
+  }, [user]); 
 
     const filteredLinks = navLinks.filter(link => {
     if (link.adminOnly && (!user || user.role !== "admin")) {

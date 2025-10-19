@@ -37,6 +37,7 @@ export default function Home() {
           name="description"
           content="Buy and sell recyclable plastic waste products and materials."
         />
+        <meta name="google-site-verification" content="bkTnSrE-c5TY3xDcN_zJC62LuSsvnNrRuP_IGkQ9Qfw" />
         <meta
           name="keywords"
           content="Cirmatch, recycling, PET, LDPE, HDPE, PP, waste management, eco-friendly, green tech, sustainable materials"

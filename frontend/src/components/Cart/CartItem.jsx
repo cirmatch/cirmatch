@@ -62,7 +62,7 @@ export default function CartItem({ item, quantity, onQuantityChange, onRemove, a
           maxQuantity={maxQtyInUserUnit}
           disabled={false}
         />
-        <pre className="text-right font-semibold text-xl text-gray-800 mt-2">
+        <pre className="text-right font-semibold text-gray-800 mt-2">
           Total: ৳{totalPrice.toFixed(3)}
         </pre>
       </div>

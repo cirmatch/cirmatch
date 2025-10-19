@@ -86,6 +86,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.loggedIn = true;
+          if (state.user) {
+    state.user = { ...state.user, isVerified: true }; // ✅ manually mark verified
+  }
         state.message = action.payload;
       })
       .addCase(verifyEmail.rejected, (state, action) => {

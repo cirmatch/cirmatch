@@ -95,7 +95,7 @@ const NumberBox = ({
         type="text"
         value={inputValue}
         onChange={handleChange}
-        className="border text-center rounded w-[110px] px-2 py-1"
+        className="border text-center rounded w-[85px] px-2 py-1"
         placeholder="0.000"
       />
 
