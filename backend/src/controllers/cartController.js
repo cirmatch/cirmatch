@@ -33,9 +33,13 @@ export const addToCart = async (req, res) => {
   if (!unit || !["Kg", "Mt"].includes(unit))
     return res.status(400).json({ message: 'Unit must be either "Kg" or "Mt"' });
 
-  const product = await Listing.findById(productId);
+  const product = await Listing.findByIdAndUpdate(
+  productId,
+  { $inc: { wishlistCount: 1 } }, // increment wishlistCount by 1
+  { new: true }                   // return updated document
+);
   if (!product) return res.status(404).json({ message: "Product not found" });
-
+console.log(product)
   const match = product.quantity.match(/^(\d+(\.\d+)?)\s*(Kg|Mt)$/);
   if (!match) return res.status(500).json({ message: "Invalid product quantity format" });
 
@@ -60,22 +64,19 @@ const itemIndex = cart.items.findIndex(item => item.productId.equals(productId))
 if (itemIndex > -1) {
   let cartItem = cart.items[itemIndex];
 
-  // 1️⃣ Convert existing cart quantity to listing unit for stock check
+  // 1 Convert existing cart quantity to listing unit for stock check
   const existingQtyInListing = convertQuantity(cartItem.quantity, cartItem.unit, listingUnit);
 
-  // 2️⃣ Convert new quantity to listing unit
+  // 2 Convert new quantity to listing unit
   const newQtyInListing = convertQuantity(quantity, unit, listingUnit);
 
-  // 3️⃣ Check if total exceeds available stock
+  // 3 Check if total exceeds available stock
   if (existingQtyInListing + newQtyInListing > availableQtyListing)
     return res.status(400).json({ message: "Cannot add more than available stock" });
 
-  // 4️⃣ Convert new quantity to **cart item's unit** and add it
+  // 4 Convert new quantity to **cart item's unit** and add it
   const newQtyInCartUnit = convertQuantity(quantity, unit, cartItem.unit);
   cartItem.quantity += newQtyInCartUnit;
-
-  // 5️⃣ Keep the cart item's unit unchanged
-  // cartItem.unit = cartItem.unit;  // no need, it's already same
 } else {
   // product not in cart, just add
   cart.items.push({ productId, quantity, unit });

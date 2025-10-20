@@ -19,11 +19,12 @@ const MobileMenu = () => {
     router.push("/auth"); 
   };
   
-  useEffect(() => {
-    if (user && !user.isVerified) {
-      handleLogout();
-    }
-  }, [user]); 
+useEffect(() => {
+  // Check if user exists AND user object is fully loaded (isVerified !== undefined)
+  if (user && typeof user.isVerified !== "undefined" && !user.isVerified) {
+    handleLogout();
+  }
+}, [user]);
 
     const filteredLinks = navLinks.filter(link => {
     if (link.adminOnly && (!user || user.role !== "admin")) {

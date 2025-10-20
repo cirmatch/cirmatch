@@ -7,6 +7,7 @@ const ALLOWED_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cance
 // ========== GET ALL ORDERS ==========
 export const getAllOrders = async (req, res) => {
   const orders = await Order.find()
+    .sort({ createdAt: -1 }) 
     .populate('orderItems.productId')
     .populate('userId', 'name email');
   res.status(200).json(orders);

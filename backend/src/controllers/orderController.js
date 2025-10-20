@@ -25,7 +25,11 @@ export const createOrder = async (req, res) => {
 
     // Validate products and check stock
     for (const item of orderItems) {
-      const product = await Listing.findById(item.productId);
+      const product = await Listing.findByIdAndUpdate(
+        item.productId,
+        { $inc: { purchaseCount: 1 } }, // increment purchaseCount by 1
+        { new: true }                   // return updated document
+      )
       if (!product) return res.status(404).json({ error: `Product not found: ${item.productId}` });
 
       // Parse listing quantity (string format: "5 Mt" or "1000 Kg")
@@ -92,9 +96,10 @@ export const createOrder = async (req, res) => {
 export const getUserOrders = async (req, res) => {
   const userId = req.user._id;
 
-  const orders = await Order.find({ userId })
-    .populate("orderItems.productId")
-    .populate("userId", "name email number");
+const orders = await Order.find({ userId })
+  .sort({ createdAt: -1 })
+  .populate("orderItems.productId")
+  .populate("userId", "name email number");
 
   if (!orders || orders.length === 0) {
     return res.status(404).json({ message: "No orders found for this user." });

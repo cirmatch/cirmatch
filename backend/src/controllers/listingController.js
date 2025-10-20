@@ -36,25 +36,44 @@ const uploadToCloudinary = (buffer) => {
   });
 };
 /**
- * Get all listings (paginated)
- * Supports query parameters: page & limit
+ * Get all listings with smart, balanced feed sorting
+ * Combines purchaseCount, wishlistCount, and viewCount using weighted popularity
+ * Supports pagination and lean responses for speed
  */
 export const getAlllisting = async (req, res) => {
+  // Parse pagination info
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = parseInt(req.query.limit) || 0;
   const skip = (page - 1) * (limit || 0);
 
-  const query = Listing.find();
+  // Aggregation pipeline for smart balanced sorting
+  const pipeline = [
+    {
+      $addFields: {
+        // Weighted popularity formula
+        popularity: {
+          $add: [
+            { $multiply: ["$purchaseCount", 3] }, // Purchases have highest weight
+            { $multiply: ["$wishlistCount", 2] }, // Wishlists have medium weight
+            "$viewCount"                          // Views have lowest weight
+          ]
+        }
+      }
+    },
+    { $sort: { popularity: -1, createdAt: -1 } }, // Sort by popularity, then newest first
+  ];
 
+  // Apply pagination if limit > 0
   if (limit > 0) {
-    query.skip(skip).limit(limit);
+    pipeline.push({ $skip: skip }, { $limit: limit });
   }
 
+  // Run both listing query and count in parallel
   const [listings, totalCount] = await Promise.all([
-    query.lean(),
+    Listing.aggregate(pipeline),
     Listing.countDocuments(),
   ]);
-
+  // Respond with paginated smart feed
   res.status(httpStatus.OK).json({
     data: listings,
     total: totalCount,
@@ -64,17 +83,24 @@ export const getAlllisting = async (req, res) => {
 };
 
 /**
- * Get listing by ID
- * @param {string} id - Listing ID from req.params
+ * Get listing by ID and increase view count by 1
+ * @param {Object} req - Express request object containing listing ID in req.params
+ * @param {Object} res - Express response object
  */
 export const getListingDetail = async (req, res) => {
-  const listing = await Listing.findById(req.params.id).lean();
+  const listing = await Listing.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { viewCount: 1 } }, // increment viewCount by 1
+    { new: true, lean: true }   // return updated document as plain JS object
+  );
 
+  // If listing not found, return 404 response
   if (!listing)
     return res
       .status(httpStatus.NOT_FOUND)
       .json({ message: "Listing not found" });
 
+  // Return the listing with updated view count
   res.status(httpStatus.OK).json(listing);
 };
 

@@ -23,11 +23,17 @@ export default function AdminProducts() {
     dispatch(getAllListing());
   }, [dispatch]);
 
-  const safeListings = Array.isArray(listings) ? listings : [];
+const safeListings = Array.isArray(listings) ? listings : [];
 
-  const filteredProducts = safeListings.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+// Filter based on search term
+let filteredProducts = safeListings.filter((product) =>
+  product.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+// Sort by createdAt (latest first)
+filteredProducts = filteredProducts.sort(
+  (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+);
 
   // Handle Delete
   const handleDelete = async (id) => {

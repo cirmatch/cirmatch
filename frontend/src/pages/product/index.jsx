@@ -37,7 +37,7 @@ const Listing = () => {
   const confirmedListings = listings.filter(l => l.Status === "confirmed");
 
   // Fixed main plastic types
-  const mainTypes = ["PET","Scrap","HDPE","PP","LDPE","POLY","PVC","ABS","EPS","PC","Mixed"];
+  const mainTypes = ["PET","SCARP","HDPE","PP","LDPE","POLY","PVC","ABS","EPS","PC","Mixed"];
 
   // Prepare sections object
   const sections = mainTypes.reduce((acc, type) => {
