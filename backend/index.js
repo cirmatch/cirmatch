@@ -85,7 +85,7 @@ app.use("/api/v1", [
 ]);
 
 // Health check
-app.get("/", (req, res) => res.send("✅ Server Running"));
+app.get("/", (req, res) => res.send("Server Running"));
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -96,5 +96,5 @@ swaggerDocs(app);
 // Start server
 const PORT = process.env.PORT;
 app.listen(PORT, () =>
-  console.log(`🚀 Server running `)
+  console.log(` Server running `)
 );

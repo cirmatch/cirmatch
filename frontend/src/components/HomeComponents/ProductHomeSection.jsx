@@ -67,7 +67,7 @@ const ProductHomeSection = ({ product = [], category }) => {
         {/* Left Navigation Button */}
         <motion.button
           ref={setPrevEl}
-          variants={fadeIn("right", 0.6)}
+          variants={fadeIn("up", 0.6)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
@@ -111,7 +111,7 @@ const ProductHomeSection = ({ product = [], category }) => {
         {/* Right Navigation Button */}
         <motion.button
           ref={setNextEl}
-          variants={fadeIn("left", 0.6)}
+          variants={fadeIn("up", 0.6)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-teal-500 hover:text-white cursor-pointer transition-colors z-10"
