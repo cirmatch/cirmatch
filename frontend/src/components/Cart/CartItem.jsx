@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { FiTrash2 } from "react-icons/fi";
 import NumberBox from "@/components/Quantity";
 
-// Converts quantity between units
 const convertQuantity = (qty, fromUnit, toUnit) => {
   if (fromUnit === toUnit) return qty;
   if (fromUnit === "Kg" && toUnit === "Mt") return qty / 1000;
@@ -24,35 +23,41 @@ export default function CartItem({ item, quantity, onQuantityChange, onRemove, a
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      transition={{ delay: animationDelay }}
-      className="border-b py-6 flex flex-row items-start justify-between gap-4"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ delay: animationDelay, duration: 0.35 }}
+      className="flex flex-col sm:flex-row items-center justify-between gap-5 p-5 bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 mt-4"
     >
       {/* Left: Image + Info */}
-      <div className="flex items-center gap-4 w-2/3">
-        <img
-          src={product?.images[0]?.path}
-          alt={product?.title || "Product Image"}
-          className="w-20 h-20 object-cover rounded-lg border cursor-pointer"
-        />
-        <div className="flex flex-col">
-          <h3 className="text-lg font-semibold">{product?.title}</h3>
-          <p className="text-sm mt-1 font-medium">
-            Price: ৳{product?.price} / {listingUnit}
+      <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-2/3">
+        <div className="flex-shrink-0 relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-md">
+          <img
+            src={product?.images[0]?.path}
+            alt={product?.title || "Product"}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        <div className="flex flex-col justify-center w-full">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 hover:text-teal-600 transition-colors">
+            {product?.title}
+          </h3>
+          <p className="mt-1 text-sm sm:text-base text-gray-500">
+            Price: <span className="font-medium text-gray-900">৳{product?.price}</span> / {listingUnit}
           </p>
+
           <button
             onClick={() => onRemove(item._id)}
-            className="mt-1 text-teal-600 hover:text-red-600 flex items-center gap-1 font-medium"
+            className="w-35 mt-3 flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl font-medium transition-colors duration-300"
           >
-            <FiTrash2 className="text-lg" /> Remove
+            <FiTrash2 /> Remove
           </button>
         </div>
       </div>
 
       {/* Right: Quantity + Total */}
-      <div className="flex flex-col items-end justify-start w-1/3">
+      <div className="flex flex-col items-start sm:items-end gap-3 w-full sm:w-1/3">
         <NumberBox
           quantity={quantity}
           setQuantity={(newQty) => onQuantityChange(item._id, newQty)}
@@ -62,9 +67,9 @@ export default function CartItem({ item, quantity, onQuantityChange, onRemove, a
           maxQuantity={maxQtyInUserUnit}
           disabled={false}
         />
-        <pre className="text-right font-semibold text-gray-800 mt-2">
-          Total: ৳{totalPrice.toFixed(3)}
-        </pre>
+        <p className="text-gray-900 font-bold text-lg sm:text-xl">
+          Total: <span className="text-teal-500">৳{totalPrice.toFixed(2)}</span>
+        </p>
       </div>
     </motion.div>
   );
