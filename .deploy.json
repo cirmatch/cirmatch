@@ -1,0 +1,7 @@
+{
+  "DEPLOYPATH": "/home/cirmatchadmin/public_html/cirmatch/",
+  "task": [
+    "backend/",
+    "frontend/"
+  ]
+}
