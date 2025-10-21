@@ -30,7 +30,7 @@ const SearchBar = () => {
     >
       <input
         type="search"
-        placeholder="Search here..."
+        placeholder="Search Pet, Hdpe, Ldpe.....etc"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => setIsFocused(true)}

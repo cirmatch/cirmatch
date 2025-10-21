@@ -19,14 +19,14 @@ export const listingFormFields = [
     name: "plastictype",
     label: "Plastic Type",
     type: "text",
-    placeholder: "e.g., Pet, PP....",
+    placeholder: "e.g., PET, PP....",
     validation: yup.string().required("Plastic type is required"),
   },
   {
     name: "metarialtype",
     label: "Material Type",
     type: "text",
-    placeholder: "e.g., Flaks, Pallet....",
+    placeholder: "e.g., flakes, granules....",
     validation: yup.string().required("Material type is required"),
   },
   {
