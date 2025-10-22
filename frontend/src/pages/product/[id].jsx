@@ -58,6 +58,7 @@ const SingleProductDetail = () => {
    */
   const handleAddToCart = () => {
     if (!loggedIn) {
+      localStorage.setItem("redirectAfterLogin", router.asPath);
       router.push("/auth");
       return;
     }

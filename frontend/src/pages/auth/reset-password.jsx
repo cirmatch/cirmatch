@@ -82,6 +82,8 @@ export default function ResetPassword() {
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
+  
+  const passwordRegex = /^(?=(?:.*\d){2,}).{6,20}$/;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -92,7 +94,11 @@ export default function ResetPassword() {
     if (newPassword !== confirmPassword) {
       return toast.error("Passwords do not match");
     }
-
+    if (!passwordRegex.test(newPassword)) {
+      return toast.error(
+        "Password must be 6 characters and contain at least 2 numbers"
+      )
+    }
     dispatch(resetPassword({ identifier, code, newPassword }));
   };
 
@@ -137,7 +143,9 @@ export default function ResetPassword() {
               toggleShow={toggleShowPasswords}
               placeholder="Confirm new password"
             />
-
+            <p className="mt-2 text-xs text-gray-500">
+              Password must be 6 characters and contain at least 2 numbers.
+            </p>
             <button
               type="submit"
               disabled={isLoading}

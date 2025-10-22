@@ -65,27 +65,29 @@ useEffect(() => {
             Log Out
           </button>
         ) : (
-          <div className="flex gap-3">
-            <ButtonLink
-              href="/auth"
-              bgColor="white"
-              textColor="#009688"
-              border="1px solid #009688"
-              hoverText="white"
-            >
-              Log In
-            </ButtonLink>
+<div className="flex gap-3">
+  <ButtonLink
+    href="/auth"
+    bgColor="white"
+    textColor="#009688"
+    border="1px solid #009688"
+    hoverText="white"
+    rememberRedirect={true}
+  >
+    Log In
+  </ButtonLink>
 
-            <ButtonLink
-              href="/auth"
-              bgColor="white"
-              textColor="#009688"
-              border="1px solid #009688"
-              hoverText="white"
-            >
-              Register
-            </ButtonLink>
-          </div>
+  <ButtonLink
+    href="/auth"
+    bgColor="white"
+    textColor="#009688"
+    border="1px solid #009688"
+    hoverText="white"
+    rememberRedirect={true}
+  >
+    Register
+  </ButtonLink>
+</div>
         )}
 
       </div>

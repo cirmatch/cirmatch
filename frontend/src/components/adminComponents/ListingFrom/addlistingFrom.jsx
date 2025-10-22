@@ -64,7 +64,7 @@ const onSubmit = async (e) => {
 };
 
   return (
-    <div className="flex justify-center items-start mt-10">
+    <div className="flex justify-center items-start mt-10 px-5">
       <form className="space-y-6 w-full max-w-3xl" onSubmit={onSubmit}>
         <h1 className="text-4xl font-bold text-gray-800 tracking-wide  pb-2">
           Create Your Listing
@@ -84,7 +84,7 @@ const onSubmit = async (e) => {
               error={errors[name]?.message}
             />
           ))}
-
+          <p className="text-gray-600">Note : Price should be set as quantity unit</p>
         <QuantityField
           quantityValue={quantityValue}
           setQuantityValue={setQuantityValue}

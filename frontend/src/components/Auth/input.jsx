@@ -3,8 +3,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Input = ({ id, label, placeholder, type = "text", icon, ...rest }) => {
   const [showPassword, setShowPassword] = useState(false);
-
-  // যদি type = password হয় তবে show/hide toggle active হবে
   const isPasswordField = type === "password";
   const inputType = isPasswordField && showPassword ? "text" : type;
 
@@ -30,7 +28,7 @@ const Input = ({ id, label, placeholder, type = "text", icon, ...rest }) => {
           type={inputType}
           id={id}
           placeholder={placeholder}
-          className="bg-gray-50 border border-gray-300 text-black text-sm rounded-md block w-full ps-12 pr-10 p-2.5 
+          className="bg-gray-50 border border-gray-300 text-black text-sm rounded-md block w-full ps-12 pr-12 p-2.5 
                      focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none"
           {...rest}
         />
@@ -40,12 +38,21 @@ const Input = ({ id, label, placeholder, type = "text", icon, ...rest }) => {
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 text-gray-500 hover:text-teal-500 focus:outline-none cursor-pointer"
+            className="absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-md 
+                       text-gray-500 hover:text-teal-500 
+                       focus:ring-2 focus:ring-teal-300 transition-all cursor-pointer"
           >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
+            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
           </button>
         )}
       </div>
+
+      {/* Password Requirement Note */}
+      {isPasswordField && (
+        <p className="mt-2 text-xs text-gray-500">
+          Password must be 6 characters and contain at least 2 numbers.
+        </p>
+      )}
     </div>
   );
 };

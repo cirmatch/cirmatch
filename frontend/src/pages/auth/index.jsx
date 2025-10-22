@@ -16,7 +16,7 @@ export default function LoginPage() {
   }, [isLogin, dispatch]);
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100 px-4 py-8 relative">
+    <div className="h-screen flex justify-center items-center bg-gray-100 px-4 py-8 relative">
       
       {/* Back arrow button */}
       <button

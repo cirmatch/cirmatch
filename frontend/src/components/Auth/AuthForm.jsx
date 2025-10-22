@@ -16,7 +16,7 @@ export default function AuthForm({ mode }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const authState = useSelector((state) => state.auth);
-
+  const redirectUrl = localStorage.getItem("redirectAfterLogin") || "/product";
   const isLogin = mode === "login";
   const fields = formFields[mode];
 
@@ -32,7 +32,10 @@ export default function AuthForm({ mode }) {
   });
 
   useEffect(() => {
-    if (authState.loggedIn) router.push("/product");
+    if (authState.loggedIn && authState.user) {
+      localStorage.removeItem("redirectAfterLogin");
+      router.push(redirectUrl);
+    }
   }, [authState.loggedIn, router]);
 
   useEffect(() => {

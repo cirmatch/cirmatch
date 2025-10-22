@@ -1,22 +1,33 @@
-import Link from 'next/link';
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const ButtonLink = ({
-  href = '/',
+  href = "/",
   children,
-  bgColor = '#029fae',
-  textColor = 'white',
-  border = 'none',
-  hoverBg = '#009688',
-  hoverText = 'white',
-  padding = 'px-4 py-2',
-  rounded = 'rounded-md',
-  textSize = 'text-sm',
-  fontWeight = 'font-medium',
-  transition = 'transition duration-200',
+  bgColor = "#029fae",
+  textColor = "white",
+  border = "none",
+  hoverBg = "#009688",
+  hoverText = "white",
+  padding = "px-4 py-2",
+  rounded = "rounded-md",
+  textSize = "text-sm",
+  fontWeight = "font-medium",
+  transition = "transition duration-200",
+  rememberRedirect = false, // new prop
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (rememberRedirect) {
+      localStorage.setItem("redirectAfterLogin", router.asPath);
+    }
+  };
+
   return (
     <Link href={href}>
       <button
+        onClick={handleClick}
         className={`${padding} ${rounded} ${textSize} ${fontWeight} ${transition} cursor-pointer`}
         style={{
           backgroundColor: bgColor,

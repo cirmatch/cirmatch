@@ -16,7 +16,7 @@ export default function VerifyPage() {
   const [code, setCode] = useState("");
   const [identifier, setIdentifier] = useState("");
   const [type, setType] = useState("register");
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
   const [isReady, setIsReady] = useState(false); // ensures localStorage is loaded
 
@@ -34,7 +34,7 @@ export default function VerifyPage() {
   // Start countdown timer
   const startTimer = () => {
     if (timerRef.current) clearInterval(timerRef.current);
-    setTimer(60);
+    setTimer(120);
     setCanResend(false);
 
     timerRef.current = setInterval(() => {
@@ -136,7 +136,7 @@ export default function VerifyPage() {
             <button
               onClick={handleResend}
               disabled={isLoading}
-              className={`text-blue-600 hover:underline font-medium ${
+              className={`text-teal-600 hover:underline font-medium ${
                 isLoading ? "cursor-not-allowed text-gray-400" : "cursor-pointer"
               }`}
             >

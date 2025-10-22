@@ -145,7 +145,6 @@ const authSlice = createSlice({
       })
       .addCase(resendCode.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
         state.message = action.payload;
       })
       .addCase(resendCode.rejected, (state, action) => {

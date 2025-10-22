@@ -16,6 +16,7 @@ const passwordRule = yup
   .required("Password is required")
   .min(6, "Password must be at least 6 characters")
   .max(20, "Password must be at most 20 characters")
+  .matches(/^(?=(?:.*\d){2,}).*$/, "Password must contain at least 2 numbers");
 
 export const loginSchema = yup.object().shape({
   identifier: emailOrPhone,
@@ -63,11 +64,11 @@ export const numberIcon = (
 export const formFields = {
   signup: [
     { id: "name", label: "Name", placeholder: "Elon Musk", icon: userIcon },
-    { id: "identifier", label: "Email or Phone Number", type: "text", placeholder: "elon@x.com or 017xxxxxxxx", icon: emailIcon /* or phoneIcon */ },
+    { id: "identifier", label: "Email or Phone Number", type: "text", placeholder: "name@mail.com or 017xxxxxxxx", icon: emailIcon /* or phoneIcon */ },
     { id: "password", label: "Password", type: "password", placeholder: "********", icon: passwordIcon },
   ],
   login: [
-    { id: "identifier", label: "Email or Phone Number", type: "text", placeholder: "elon@x.com or 017xxxxxxxx", icon: emailIcon /* or phoneIcon */ },
+    { id: "identifier", label: "Email or Phone Number", type: "text", placeholder: "name@mail.com or 017xxxxxxxx", icon: emailIcon /* or phoneIcon */ },
     { id: "password", label: "Password", type: "password", placeholder: "********", icon: passwordIcon },
   ],
 };
