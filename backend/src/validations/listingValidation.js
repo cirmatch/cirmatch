@@ -3,6 +3,7 @@ import Joi from "joi";
 // Create new listing schema
 export const newListingSchema = Joi.object({
   title: Joi.string().required().messages({ "string.empty": "Title is required" }),
+  sellername: Joi.string().required().messages({ "string.empty": "Seller Name is required" }),
   description: Joi.string().required().messages({ "string.empty": "Description is required" }),
   quantity: Joi.string()
     .pattern(/^\d+\s*(Kg|Mt)$/i)

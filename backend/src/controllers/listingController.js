@@ -114,7 +114,7 @@ export const newListing = async (req, res) => {
     }
 
     const {
-      title, description, quantity, price, plastictype,
+      title,sellername, description, quantity, price, plastictype,
       metarialtype, location, sourcingCondition,
       color, washingProcess
     } = req.body;
@@ -132,6 +132,7 @@ export const newListing = async (req, res) => {
 
     const newItem = new Listing({
       title,
+      sellername,
       description,
       quantity,
       price: parseFloat(price) || undefined,

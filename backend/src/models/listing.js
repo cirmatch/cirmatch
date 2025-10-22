@@ -8,7 +8,7 @@ const listingSchema = new Schema(
   {
     // Title of the listing
     title: { type: String, required: true },
-
+    sellername: { type: String, required: true },
     // Location of the plastic source
     location: { type: String, required: true },
 

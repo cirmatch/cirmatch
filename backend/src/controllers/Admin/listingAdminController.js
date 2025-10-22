@@ -30,6 +30,7 @@ export const deleteProduct = async (req, res) => {
 export const editListing = async (req, res) => {
   const {
     title,
+    sellername,
     description,
     quantity,
     price,
@@ -44,6 +45,7 @@ export const editListing = async (req, res) => {
   const updatedFields = cleanFields({
     title,
     description,
+    sellername,
     quantity: quantity || undefined,
     price: parseFloat(price) || undefined,
     plastictype,

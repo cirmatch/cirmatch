@@ -8,6 +8,13 @@ export const listingFormFields = [
     placeholder: "Enter listing title",
     validation: yup.string().required("Title is required"),
   },
+    {
+    name: "sellername",
+    label: "Seller Name",
+    type: "text",
+    placeholder: "Enter listing Seller Name",
+    validation: yup.string().required("Seller Name is required"),
+  },
   {
     name: "description",
     label: "Description",
