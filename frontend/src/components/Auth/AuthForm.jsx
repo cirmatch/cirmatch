@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -16,9 +16,10 @@ export default function AuthForm({ mode }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const authState = useSelector((state) => state.auth);
-  const redirectUrl = localStorage.getItem("redirectAfterLogin") || "/product";
   const isLogin = mode === "login";
   const fields = formFields[mode];
+
+  const [redirectUrl, setRedirectUrl] = useState("/product"); // default value
 
   // Validation Schema
   const validationSchema = isLogin ? loginSchema : registerSchema;
@@ -31,24 +32,34 @@ export default function AuthForm({ mode }) {
     resolver: yupResolver(validationSchema),
   });
 
+  // ✅ Client-side only localStorage access
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedRedirect = localStorage.getItem("redirectAfterLogin");
+      if (storedRedirect) setRedirectUrl(storedRedirect);
+    }
+  }, []);
+
   useEffect(() => {
     if (authState.loggedIn && authState.user) {
-      localStorage.removeItem("redirectAfterLogin");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("redirectAfterLogin");
+      }
       router.push(redirectUrl);
     }
-  }, [authState.loggedIn, router]);
+  }, [authState.loggedIn, router, redirectUrl]);
 
   useEffect(() => {
     if (authState.isError && authState.message) {
       toast.error(authState.message);
       setTimeout(() => {
         dispatch(emptyMessage());
-      }, 4000); // 4 seconds
+      }, 4000); 
     } else if (authState.isSuccess && authState.message) {
       toast.success(authState.message);
       setTimeout(() => {
         dispatch(emptyMessage());
-      }, 4000); // 4 seconds
+      }, 4000); 
     }
   }, [authState.isError, authState.isSuccess, authState.message, dispatch]);
 
@@ -58,8 +69,10 @@ export default function AuthForm({ mode }) {
         await dispatch(loginUser(formData)).unwrap();
       } else {
         await dispatch(registerUser(formData)).unwrap();
-        localStorage.setItem("identifier", formData.identifier);
-        localStorage.setItem("verifyType", "register");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("identifier", formData.identifier);
+          localStorage.setItem("verifyType", "register");
+        }
         router.push("/auth/verifyMail");
       }
     } catch (error) {
@@ -76,7 +89,6 @@ export default function AuthForm({ mode }) {
         {isLogin ? "Log In" : "Sign Up"}
       </h2>
 
-      {/* Name field only for register */}
       {!isLogin && (
         <div className="mb-4">
           <Input
@@ -91,9 +103,8 @@ export default function AuthForm({ mode }) {
         </div>
       )}
 
-      {/* Identifier and Password fields */}
       {fields
-        .filter((f) => f.id !== "name") // name handled above separately
+        .filter((f) => f.id !== "name")
         .map(({ id, label, type, placeholder, icon }) => (
           <div key={id} className="mb-4">
             <Input
@@ -111,6 +122,7 @@ export default function AuthForm({ mode }) {
       <Button className="w-full mt-6" disabled={authState.isLoading}>
         {authState.isLoading ? "Loading..." : isLogin ? "Log In" : "Register"}
       </Button>
+
       <div className="text-center mt-4">
         <Link
           href="/auth/forget-password"
