@@ -22,7 +22,7 @@ export const validateRequest = (schema) => {
 
     if (error) {
       const errors = error.details.map(detail => detail.message);
-      return res.status(400).json({ message: "Validation error", errors });
+      return res.status(400).json({ message: errors, errors });
     }
 
     req.body = parsedBody;
