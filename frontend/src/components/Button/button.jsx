@@ -14,12 +14,12 @@ const ButtonLink = ({
   textSize = "text-sm",
   fontWeight = "font-medium",
   transition = "transition duration-200",
-  rememberRedirect = false, // new prop
+  rememberRedirect = false,
 }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    if (rememberRedirect) {
+    if (rememberRedirect && typeof window !== "undefined") {
       localStorage.setItem("redirectAfterLogin", router.asPath);
     }
   };

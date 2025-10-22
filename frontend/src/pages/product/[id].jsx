@@ -58,7 +58,9 @@ const SingleProductDetail = () => {
    */
   const handleAddToCart = () => {
     if (!loggedIn) {
-      localStorage.setItem("redirectAfterLogin", router.asPath);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("redirectAfterLogin", router.asPath);
+      }
       router.push("/auth");
       return;
     }
@@ -72,6 +74,9 @@ const SingleProductDetail = () => {
    */
   const handleBuyNow = () => {
     if (!loggedIn) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("redirectAfterLogin", router.asPath);
+      }
       router.push("/auth");
       return;
     }
