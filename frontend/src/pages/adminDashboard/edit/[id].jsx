@@ -50,6 +50,7 @@ const EditListingPage = () => {
     if (!listing) return;
     setFormData({
       title: listing.title || "",
+      sellername: listing.sellername || "",
       description: listing.description || "",
       plastictype: listing.plastictype || "",
       metarialtype: listing.metarialtype || "",
@@ -119,6 +120,7 @@ const EditListingPage = () => {
 
   const validateForm = () => {
     if (!formData.title) return "Title is required";
+    if (!formData.sellername) return "Seller Name is required";
     if (!formData.description) return "Description is required";
     if (!formData.plastictype) return "Plastic type is required";
     if (!formData.metarialtype) return "Material type is required";
