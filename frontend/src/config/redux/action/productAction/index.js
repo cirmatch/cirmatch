@@ -108,8 +108,6 @@ export const addNewListing = createAsyncThunk(
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       const message = error?.response?.data?.message || error.message || "Unknown error";
-      console.log(message)
-      console.log(error)
       return thunkApi.rejectWithValue(message);
     }
   }
