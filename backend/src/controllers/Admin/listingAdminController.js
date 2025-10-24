@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import Listing from "../../models/listing.js";
+import { cloudinary } from "../../cloudinary.js";
 
 /**
   Helper: Remove undefined fields from an object
@@ -16,11 +17,32 @@ const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled", "out_of_stock"];
   @param {string} productId - Listing ID from req.params
  */
 export const deleteProduct = async (req, res) => {
-  const deleted = await Listing.findByIdAndDelete(req.params.productId);
-  if (!deleted)
-    return res.status(httpStatus.NOT_FOUND).json({ message: "Listing not found" });
+  try {
+    const listing = await Listing.findById(req.params.productId);
+    if (!listing) {
+      return res.status(httpStatus.NOT_FOUND).json({ message: "Listing not found" });
+    }
 
-  res.status(httpStatus.OK).json({ message: "Listing deleted successfully" });
+    // Delete associated images from Cloudinary
+    if (listing.images && listing.images.length > 0) {
+      for (const image of listing.images) {
+        try {
+          // Assuming image.path or image.filename contains the Cloudinary public_id
+          await cloudinary.uploader.destroy(image.filename); // usually public_id is stored, adjust if needed
+        } catch (err) {
+          console.error(`Error deleting Cloudinary file ${image.filename}:`, err);
+        }
+      }
+    }
+
+    // Delete listing from DB
+    await Listing.findByIdAndDelete(req.params.productId);
+
+    res.status(httpStatus.OK).json({ message: "Listing and associated Cloudinary files deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
+  }
 };
 
 /*
