@@ -84,7 +84,7 @@ const onSubmit = async (e) => {
               error={errors[name]?.message}
             />
           ))}
-          <p className="text-gray-600">Note : Price should be set as quantity unit</p>
+          <p className="text-gray-600">Note : Enter price according to your selected unit (kg/mt)</p>
         <QuantityField
           quantityValue={quantityValue}
           setQuantityValue={setQuantityValue}
