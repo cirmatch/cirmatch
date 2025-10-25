@@ -4,7 +4,7 @@ import { ordervalidate } from '../middleware/validateRequest.js';
 import wrapAsync from '../utils/wrapAsync.js';
 import { createOrderSchema } from '../validations/orderValidation.js';
 import { createOrder, deleteOrderByUser, getUserOrders, updateOrderByUser } from '../controllers/orderController.js';
-import { getAllOrders, getOrderDetail, updateOrderStatus } from '../controllers/Admin/orderAdminController.js';
+import { deleteOrderByAdmin, getAllOrders, getOrderDetail, updateOrderStatus } from '../controllers/Admin/orderAdminController.js';
 
 const router = express.Router();
 
@@ -29,6 +29,10 @@ router.get('/allOrders', authenticate, authorizeAdmin, wrapAsync(getAllOrders));
 
 // Get order detail (admin only)
 router.get('/orders/:id', authenticate, authorizeAdmin, wrapAsync(getOrderDetail));
+
+// orderDelete (admin only)
+router.delete('/orders/delete/:orderId',  authenticate, authorizeAdmin, wrapAsync(deleteOrderByAdmin));
+
 
 // Update order status (admin only)
 router.patch('/orders/:orderId/status', authenticate, authorizeAdmin, wrapAsync(updateOrderStatus));

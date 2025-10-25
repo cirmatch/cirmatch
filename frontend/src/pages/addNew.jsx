@@ -86,7 +86,7 @@ useEffect(() => {
     const files = (data.images || []).filter((file) => file instanceof File);
 
     if (files.length === 0) {
-      alert("At least 1 image is required");
+      toast.error("At least 1 image is required");
       return;
     }
 

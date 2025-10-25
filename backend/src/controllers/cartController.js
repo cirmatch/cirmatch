@@ -39,7 +39,7 @@ export const addToCart = async (req, res) => {
   { new: true }                   // return updated document
 );
   if (!product) return res.status(404).json({ message: "Product not found" });
-console.log(product)
+
   const match = product.quantity.match(/^(\d+(\.\d+)?)\s*(Kg|Mt)$/);
   if (!match) return res.status(500).json({ message: "Invalid product quantity format" });
 
@@ -131,7 +131,7 @@ export const removeFromCart = async (req, res) => {
 
     // 3️⃣ Fetch cart AFTER removal and populate product details
     const cartAfter = await Cart.findOne({ userId }).populate('items.productId');
-    console.log('Cart after removal:', cartAfter.items);
+
 
     // 4️⃣ Return updated cart
     return res.status(200).json({

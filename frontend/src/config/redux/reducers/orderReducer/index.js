@@ -4,9 +4,9 @@ import {
   getUserOrders,
   getAllOrders,
   updateOrderStatus,
-  deleteOrderByUser,
   updateOrderByUser,
   getOrderDetail,
+  deleteOrderByAdmin,
 } from "../../action/orderAction";
 
 /**
@@ -171,11 +171,11 @@ const orderSlice = createSlice({
       // ======================
       // ❌ Delete Order (User)
       // ======================
-      .addCase(deleteOrderByUser.pending, (state) => {
+      .addCase(deleteOrderByAdmin.pending, (state) => {
         state.isLoading = true;
         state.message = "Deleting order...";
       })
-      .addCase(deleteOrderByUser.fulfilled, (state, action) => {
+      .addCase(deleteOrderByAdmin.fulfilled, (state, action) => {
         state.isLoading = false;
         state.message = action.payload.message || "Order deleted successfully.";
         state.isError = false;
@@ -183,7 +183,7 @@ const orderSlice = createSlice({
         // Remove deleted order from orders array
         state.orders = state.orders.filter(order => order._id !== action.meta.arg);
       })
-      .addCase(deleteOrderByUser.rejected, (state, action) => {
+      .addCase(deleteOrderByAdmin.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

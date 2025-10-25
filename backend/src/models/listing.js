@@ -82,6 +82,7 @@ const listingSchema = new Schema(
 listingSchema.index({
   title: "text",
   description: "text",
+  metarialtype: "text",
   plastictype: "text",
   location: "text",
   sourcingCondition: "text",

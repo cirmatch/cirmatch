@@ -13,11 +13,11 @@ const extractErrorMessage = (error) => {
   if (error?.response?.data?.error) {
     return error.response.data.error;   // Alternative backend error field
   }
-  if (error?.response?.status) {
-    return `Request failed with status ${error.response.status}`; // HTTP status fallback
-  }
   if (error?.message) {
     return error.message; // Generic error, e.g., network issues
+  }
+    if (error?.response?.status) {
+    return `Request failed with status ${error.response.status}`; // HTTP status fallback
   }
   return "Unknown error occurred"; // Fallback message
 };
@@ -94,11 +94,11 @@ export const updateOrderStatus = createAsyncThunk(
  * @param {string} orderId - ID of the order
  * Allows a user to delete their own order.
  */
-export const deleteOrderByUser = createAsyncThunk(
-  "Order/deleteOrderByUser",
+export const deleteOrderByAdmin = createAsyncThunk(
+  "Order/deleteOrderByAdmin",
   async (orderId, thunkApi) => {
     try {
-      const response = await client.delete(`/order/delete/${orderId}`);
+      const response = await client.delete(`/orders/delete/${orderId}`);
       return thunkApi.fulfillWithValue(response.data);
     } catch (error) {
       return thunkApi.rejectWithValue(extractErrorMessage(error));

@@ -34,3 +34,23 @@ export const updateOrderStatus = async (req, res) => {
 
   res.status(200).json({ message: 'Order status updated.', order });
 };
+
+export const deleteOrderByAdmin = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ 
+        message: 'Order not found.', 
+      });
+    }
+
+    await order.deleteOne();
+
+    res.status(200).json({ message: 'Order deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    res.status(500).json({ message: 'Server error while deleting order.' });
+  }
+};

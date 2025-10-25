@@ -88,7 +88,7 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     if (!cart || !cart.items || cart.items.length === 0) {
-      alert("Your cart is empty. Add some products before placing an order.");
+      toast.error("Your cart is empty. Add some products before placing an order.");
       return;
     }
 

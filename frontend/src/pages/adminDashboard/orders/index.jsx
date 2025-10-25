@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AdminLayout from "@/layout/adminLayout/adminLayout";
 import { useDispatch } from "react-redux";
-import { updateOrderStatus } from "@/config/redux/action/orderAction";
+import { deleteOrderByAdmin, updateOrderStatus } from "@/config/redux/action/orderAction";
 import toast from "react-hot-toast";
 import Loading from "@/components/Loading";
 import { useOrders } from "@/hooks/useOrders";
@@ -20,12 +20,23 @@ export default function OrdersPage() {
       if (res?.payload?.success || res?.type?.includes("fulfilled")) toast.success("Order status updated!");
       else toast.error("Failed to update order status.");
     } catch (err) {
-      console.error("Order update failed:", err);
       toast.error("Error updating order!");
     } finally {
       setUpdatingId(null);
     }
   };
+
+const OrderDelete = async (orderId) => {
+  try {
+    const res = await dispatch(deleteOrderByAdmin( orderId ));
+    if (res?.payload?.success || res?.type?.includes("fulfilled")) 
+      toast.success("Order deleted successfully!");
+    else 
+      toast.error("Failed to delete order.");
+  } catch (err) {
+    toast.error("Error deleting order!");
+  }
+};
 
   return (
     <AdminLayout>
@@ -42,8 +53,8 @@ export default function OrdersPage() {
 
               <SearchInput search={search} setSearch={setSearch} />
 
-              {isLoading && !updatingId ? <Loading /> : isError ? <p className="text-red-500">Error: {message}</p> : (
-                <OrdersTable orders={orders} updatingId={updatingId} handleStatusChange={handleStatusChange} />
+              {isLoading && !updatingId ? <Loading /> : (
+                <OrdersTable orders={orders} updatingId={updatingId} handleStatusChange={handleStatusChange} onDelete={OrderDelete}/>
               )}
             </div>
           </main>
