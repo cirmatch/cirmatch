@@ -4,7 +4,7 @@ import { getAccessToken, storeTokens, clearTokens } from "@/utils/tokenHelper";
 
 // Base URL for all API requests
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
+export const FRONTEND_URL = process.env.FRONTEND_URL;
 // Create an Axios instance with default settings
 export const client = axios.create({
   baseURL: BASE_URL,               // All requests will be prefixed with this URL

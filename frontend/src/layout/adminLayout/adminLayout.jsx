@@ -24,11 +24,16 @@ export default function AdminLayout({ children }) {
   }
 
   return (
+    <>
+      <Head>
+        <meta name="robots" content="noindex, nofollow" />
+      </Head>
     <div className="flex min-h-screen">
       <Sidebar />
       <main className="ml-16 md:ml-64 w-full p-4">
         {children}
       </main>
     </div>
+    </>
   );
 }
