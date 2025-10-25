@@ -4,7 +4,17 @@ import Image from 'next/image';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 
 export default function ProductRow({ product, onDelete, onRowClick, onStatusChange, updatingId }) {
-  const { _id, title, images, Status } = product;
+  const { _id, title, images, Status,location, createdAt } = product;
+
+  const date = new Date(createdAt);
+  const formatted = date.toLocaleString("en-BD", {
+  timeZone: "Asia/Dhaka",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
   return (
     <tr
@@ -28,6 +38,13 @@ export default function ProductRow({ product, onDelete, onRowClick, onStatusChan
 
       {/* Product Title */}
       <td className="border border-gray-300 px-4 py-2">{title}</td>
+
+      {/* Product Location */}
+      <td className="border border-gray-300 px-4 py-2">{location}</td>
+
+      {/* Product Date */}
+      <td className="border border-gray-300 px-4 py-2">{formatted}</td>
+
 
       {/* Actions */}
       <td

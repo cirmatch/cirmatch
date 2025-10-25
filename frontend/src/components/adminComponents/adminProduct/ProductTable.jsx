@@ -8,6 +8,8 @@ const ProductsTable = ({ products, onDelete, onRowClick ,status, onStatusChange,
         <tr className="bg-teal-200">
           <th className="border border-gray-300 p-2">Image</th>
           <th className="border border-gray-300 p-2">Title</th>
+          <th className="border border-gray-300 p-2">Location</th>
+          <th className="border border-gray-300 p-2">Date</th>
           <th className="border border-gray-300 p-2">Actions</th>
           <th className="border border-gray-300 p-2">Status</th>
         </tr>
