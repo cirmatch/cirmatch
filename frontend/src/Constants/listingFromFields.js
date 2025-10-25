@@ -3,7 +3,7 @@ import * as yup from "yup";
 export const listingFormFields = [
   {
     name: "title",
-    label: "Title",
+    label: "Product Title",
     type: "text",
     placeholder: "Enter listing title",
     validation: yup.string().required("Title is required"),
@@ -17,7 +17,7 @@ export const listingFormFields = [
   },
   {
     name: "description",
-    label: "Description",
+    label: "Product Description",
     type: "textarea",
     placeholder: "Enter description",
     validation: yup.string().required("Description is required"),
