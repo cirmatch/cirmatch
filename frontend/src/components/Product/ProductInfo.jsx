@@ -82,6 +82,12 @@ export function ProductInfo({
           <span className="font-semibold">Seller Name:</span> {listing.sellername}
         </p>
         <p>
+          <span className="font-semibold">Seller Location:</span> {listing.location}
+        </p>
+        <p>
+          <span className="font-semibold">Available Quantity:</span> {listing.quantity}
+        </p>
+        <p>
           <span className="font-semibold">Plastic Type:</span> {listing.plastictype}
         </p>
         <p>
@@ -92,9 +98,6 @@ export function ProductInfo({
             <span className="font-semibold">Colour :</span> {listing.color}
           </p>
         )}
-        <p>
-          <span className="font-semibold">Quantity:</span> {listing.quantity}
-        </p>
         {listing.sourcingCondition && (
           <p>
             <span className="font-semibold">Sourcing Condition:</span> {listing.sourcingCondition}
@@ -105,9 +108,6 @@ export function ProductInfo({
             <span className="font-semibold">Washing Process:</span> {listing.washingProcess}
           </p>
         )}
-        <p>
-          <span className="font-semibold">Location:</span> {listing.location}
-        </p>
       </div>
 
       <hr className="my-6 border-gray-300" />
