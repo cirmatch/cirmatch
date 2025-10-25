@@ -26,9 +26,14 @@ export default function AdminProducts() {
 const safeListings = Array.isArray(listings) ? listings : [];
 
 // Filter based on search term
-let filteredProducts = safeListings.filter((product) =>
-  product.title.toLowerCase().includes(searchTerm.toLowerCase())
-);
+let filteredProducts = safeListings.filter((product) => {
+  const term = searchTerm.toLowerCase();
+  return (
+    product.title.toLowerCase().includes(term) ||
+    product.location.toLowerCase().includes(term) ||
+    product.sellername.toLowerCase().includes(term)
+  );
+});
 
 // Sort by createdAt (latest first)
 filteredProducts = filteredProducts.sort(

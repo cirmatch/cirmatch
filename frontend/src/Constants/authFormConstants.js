@@ -63,7 +63,7 @@ export const numberIcon = (
 // FORM FIELD DEFINITIONS
 export const formFields = {
   signup: [
-    { id: "name", label: "Name", placeholder: "Elon Musk", icon: userIcon },
+    { id: "name", label: "Name", placeholder: "Your Name", icon: userIcon },
     { id: "identifier", label: "Email or Phone Number", type: "text", placeholder: "name@mail.com or 017xxxxxxxx", icon: emailIcon /* or phoneIcon */ },
     { id: "password", label: "Password", type: "password", placeholder: "********", icon: passwordIcon },
   ],

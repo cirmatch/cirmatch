@@ -95,7 +95,7 @@ export default function AuthForm({ mode }) {
             label="Name"
             id="name"
             type="text"
-            placeholder="Elon Musk"
+            placeholder="Your Name"
             icon={userIcon}
             {...register("name")}
           />
