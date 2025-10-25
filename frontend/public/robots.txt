@@ -1,9 +1,5 @@
-# *
 User-agent: *
+Disallow: /adminDashboard/
 Allow: /
 
-# Host
-Host: https://cirmatch.com
-
-# Sitemaps
 Sitemap: https://cirmatch.com/sitemap.xml
