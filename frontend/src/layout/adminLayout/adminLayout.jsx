@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import Sidebar from "@/components/adminComponents/AdminNavbar/adminNav";
 import Loading from "@/components/Loading";
+import Head from "next/head";
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
