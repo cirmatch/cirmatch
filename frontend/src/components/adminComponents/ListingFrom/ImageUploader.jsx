@@ -23,7 +23,7 @@ const ImageUploader = ({ oldImages = [], newImages = [], preview = [], handleIma
         ))}
 
         {newImages.map((img, idx) => (
-          <div key={idx} className="relative w-32 h-32 border rounded-md overflow-hidden">
+          <div key={idx} className="relative w-32 h-32 border rounded-md overflow-hidden mb-2">
             <img src={preview[idx]} alt={`New ${idx}`} className="w-full h-full object-cover" />
             <button
               type="button"

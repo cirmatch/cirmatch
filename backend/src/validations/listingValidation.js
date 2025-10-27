@@ -19,7 +19,7 @@ export const newListingSchema = Joi.object({
   }),
   location: Joi.string().required().messages({ "string.empty": "Location is required" }),
   plastictype: Joi.string().required().messages({ "string.empty": "Plastic type is required" }),
-  metarialtype: Joi.string().required().messages({ "string.empty": "Material type is required" }),
+  metarialtype: Joi.string().optional(),
   sourcingCondition: Joi.string()
     .valid("Post Consumer", "Post Industrial", "Mixed")
     .messages({ "any.only": "Invalid sourcing condition" }),

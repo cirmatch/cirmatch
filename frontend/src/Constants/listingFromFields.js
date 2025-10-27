@@ -31,21 +31,21 @@ export const listingFormFields = [
   },
   {
     name: "metarialtype",
-    label: "Material Type",
+    label: "Material Type (Optional)",
     type: "text",
     placeholder: "e.g., flakes, granules....",
-    validation: yup.string().required("Material type is required"),
+    validation: yup.string(),
   },
   {
     name: "sourcingCondition",
-    label: "Sourcing Condition",
+    label: "Sourcing Condition (Optional)",
     type: "select",
     options: ["Post Consumer", "Post Industrial", "Mixed"],
-    validation: yup.string(), // optional
+    validation: yup.string(), 
   },
   {
     name: "washingProcess",
-    label: "Washing Process",
+    label: "Washing Process (Optional)",
     type: "select",
     options: ["Cold Wash", "Hot Wash", "Unwashed"],
     validation: yup.string(), // optional
@@ -59,7 +59,7 @@ export const listingFormFields = [
   },
   {
     name: "color",
-    label: "Color",
+    label: "Color (Optional)",
     type: "text",
     placeholder: "e.g., Blue",
     validation: yup.string(),

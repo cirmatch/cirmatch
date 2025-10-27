@@ -20,7 +20,7 @@ const listingSchema = new Schema(
     },
 
     // Material type of the plastic
-    metarialtype: { type: String, required: true },
+    metarialtype: { type: String },
 
     // Quantity of the material
     quantity: { type: String, required: true },
