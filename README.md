@@ -3,16 +3,19 @@ Crimatch :
 Crimatch is a fullstack recycling B2B marketplace where users can buy and sell recyclable materials like PET, LDPE, and HDPE. The platform supports secure authentication, product management, and admin controls.
 
 Features :
+
     1. JWT Authentication (Register, Login, Role-based Access)
     2. Product Listings with Images, Descriptions & Prices
     3. Cart System & Checkout
     4. Order Tracking
     5. Admin Dashboard
 Deployed on:
+
     Frontend → Vercel
     Backend → Render
 
 Tech Stack
+
     1.Frontend:
         a) next.js
         b) Redux Toolkit
@@ -37,6 +40,7 @@ Tech Stack
         i) swagger.js (for api documentation)
 
 Project Setup :
+
     Clone Repository :
         git clone https://github.com/yourusername/crimatch.git
         cd crimatch
@@ -50,9 +54,11 @@ Project Setup :
             npm install
 
 Environment Variables:
+
     Frontend : 
         NEXT_PUBLIC_API_URL
         FRONTEND_URL
+
     Backend : 
         CLOUD_API_KEY
         CLOUD_API_SECRET
@@ -71,6 +77,7 @@ Environment Variables:
         NODE_ENV
 
 Run The Project :
+
     cd (file name)
     npm run dev
 
