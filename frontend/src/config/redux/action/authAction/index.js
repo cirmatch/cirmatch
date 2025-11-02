@@ -137,6 +137,35 @@ export const loginFromToken = createAsyncThunk(
   }
 );
 
+// get userAllUser
+export const getUser = createAsyncThunk(
+  "user/getUser",
+  async (_, thunkAPI) => {
+    try {
+      const response = await client.get("/getUser");
+      return thunkAPI.fulfillWithValue(response.data)
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Sonthing went Wrong");
+    }
+  }
+);
+
+// Change ROle
+export const changeRole = createAsyncThunk(
+  "user/changeRole",
+  async ({userId,role}, thunkAPI) => {
+    try {
+      const response = await client.post("/change-role", {
+        userId,
+        role
+      });
+      return thunkAPI.fulfillWithValue(response.data)
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Somthing Went Wrong");
+    }
+  }
+);
+
 // get userStats
 export const getUserStats = createAsyncThunk(
   "user/getUserStats",
@@ -145,8 +174,7 @@ export const getUserStats = createAsyncThunk(
       const response = await client.get("/getUserStats");
       return thunkAPI.fulfillWithValue(response.data)
     } catch (error) {
-      clearTokens();
-      return thunkAPI.rejectWithValue("Invalid or expired token");
+      return thunkAPI.rejectWithValue("Somthing Went Wrong");
     }
   }
 );

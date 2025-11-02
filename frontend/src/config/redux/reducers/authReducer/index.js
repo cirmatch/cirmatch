@@ -9,9 +9,12 @@ import {
   getUserStats,
   forgetPassword,
   resetPassword,
+  getUser,
+  changeRole,
 } from "../../action/authAction";
 
 const initialState = {
+  allUser: null,
   user: null,
   userGrowth: null,
   isError: false,
@@ -175,6 +178,32 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.message = action.payload || "Session expired";
+      })
+      // get user 
+      .addCase(getUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.allUser = action.payload
+      })
+      .addCase(getUser.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      //Change Role
+      .addCase(changeRole.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(changeRole.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.message = action.payload.message
+      })
+      .addCase(changeRole.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
       })
       // get user Stats
       .addCase(getUserStats.pending, (state) => {

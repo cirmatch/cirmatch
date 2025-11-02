@@ -10,7 +10,7 @@ export default function Sidebar() {
   const navItems = [
     { name: 'Dashboard', icon: <FiHome />, href: '/adminDashboard' },
     { name: 'Products', icon: <FiBox />, href: '/adminDashboard/products' },
-    // { name: 'Users', icon: <FiUsers />, href: '/adminDashboard/users' },
+    { name: 'Users', icon: <FiUsers />, href: '/adminDashboard/user' },
     { name: 'Orders', icon: <FiInbox />, href: '/adminDashboard/orders' },
     { name: 'Main Page', icon: <FiArrowRight />, href: '/' },
     // { name: 'Settings', icon: <FiSettings  />, href: '/adminDashboard/setting' },

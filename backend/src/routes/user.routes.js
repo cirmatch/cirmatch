@@ -11,7 +11,7 @@ import {
 } from "../controllers/userController.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import { authenticate, authorizeAdmin } from "../middleware/auth.js";
-import { getUserStats, makeUserAdmin } from "../controllers/Admin/useradmincontroller.js";
+import { changeRole, getAllUser, getUserStats } from "../controllers/Admin/useradmincontroller.js";
 
 const router = Router();
 
@@ -28,7 +28,8 @@ router.post("/verify-email", wrapAsync(verifyIdentifier));
 router.post("/resend-code", wrapAsync(resendCode));
 
 /* ================= ADMIN ROUTES ================= */
+router.get("/getUser", authenticate, authorizeAdmin, wrapAsync(getAllUser));
 router.get("/getUserStats", authenticate, authorizeAdmin, wrapAsync(getUserStats));
-router.post("/makeuseradmin", authenticate, authorizeAdmin, wrapAsync(makeUserAdmin));
+router.post("/change-role", authenticate, authorizeAdmin, wrapAsync(changeRole));
 
 export default router;

@@ -24,10 +24,6 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    message:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Contact', 
-    },
     reviewedPost:[{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Review',
