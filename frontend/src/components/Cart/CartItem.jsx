@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { FiTrash2 } from "react-icons/fi";
 import NumberBox from "@/components/Quantity";
 
@@ -10,7 +9,7 @@ const convertQuantity = (qty, fromUnit, toUnit) => {
   return qty;
 };
 
-export default function CartItem({ item, quantity, onQuantityChange, onRemove, animationDelay }) {
+export default function CartItem({ item, quantity, onQuantityChange, onRemove }) {
   const product = item.productId;
 
   const match = product?.quantity?.match(/^(\d+(\.\d+)?)\s*(Kg|Mt)$/i);
@@ -22,13 +21,7 @@ export default function CartItem({ item, quantity, onQuantityChange, onRemove, a
   const maxQtyInUserUnit = convertQuantity(listingQty, listingUnit, item.unit);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ delay: animationDelay, duration: 0.35 }}
-      className="flex flex-col sm:flex-row items-center justify-between gap-5 p-5 bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 mt-4"
-    >
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-5 p-5 bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 mt-4">
       {/* Left: Image + Info */}
       <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-2/3">
         <div className="flex-shrink-0 relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-md">
@@ -71,6 +64,6 @@ export default function CartItem({ item, quantity, onQuantityChange, onRemove, a
           Total: <span className="text-teal-500">৳{totalPrice.toFixed(2)}</span>
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }

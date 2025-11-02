@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { userCart, removeFromCart, clearCart } from "@/config/redux/action/cartAction";
-import { motion, AnimatePresence } from "framer-motion";
 
 import UserLayout from "@/layout/clienLayout/UserLayout";
 import Loading from "@/components/Loading";
@@ -76,14 +75,9 @@ export default function CartProduct() {
     return (
       <UserLayout>
         <div className="min-h-[60vh] flex items-center justify-center">
-          <motion.p
-            className="text-center text-lg font-medium text-gray-500"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
+          <p className="text-center text-lg font-medium text-gray-500">
             No items in your cart.
-          </motion.p>
+          </p>
         </div>
       </UserLayout>
     );
@@ -91,30 +85,22 @@ export default function CartProduct() {
 
   return (
     <UserLayout>
-      <motion.div
-        className="max-w-6xl mx-auto px-4 py-10"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="max-w-6xl mx-auto px-4 py-10">
         <CartHeader onClearCart={handleClearCart} />
         <hr />
 
-        <AnimatePresence>
-          {cart.items.map((item, index) => (
-            <CartItem
-              key={item._id}
-              item={item}
-              quantity={quantities[item._id] || 0}
-              onQuantityChange={handleQuantityChange}
-              onRemove={handleRemove}
-              animationDelay={index * 0.05}
-            />
-          ))}
-        </AnimatePresence>
+        {cart.items.map((item) => (
+          <CartItem
+            key={item._id}
+            item={item}
+            quantity={quantities[item._id] || 0}
+            onQuantityChange={handleQuantityChange}
+            onRemove={handleRemove}
+          />
+        ))}
 
         <CartSummary subtotal={calculateSubtotal()} shippingCost={0} quantities={quantities}/>
-      </motion.div>
+      </div>
     </UserLayout>
   );
 }

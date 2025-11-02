@@ -1,32 +1,26 @@
-import { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
+import { useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 const SearchBar = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== "") {
       router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
   return (
-    <motion.form
+    <form
       onSubmit={handleSubmit}
       role="search"
-      className="col-span-1 max-w-lg w-full relative mx-auto"
-      animate={{
-        scale: isFocused ? 1.02 : 1,
-        boxShadow: isFocused
-          ? '0px 4px 16px rgba(0, 0, 0, 0.1)'
-          : '0px 2px 4px rgba(0, 0, 0, 0.05)',
-      }}
-      transition={{ duration: 0.3 }}
+      className={`col-span-1 max-w-lg w-full relative mx-auto ${
+        isFocused ? "shadow-lg scale-[1.02]" : "shadow-md scale-100"
+      } transition-all duration-300`}
     >
       <input
         type="search"
@@ -45,7 +39,7 @@ const SearchBar = () => {
       >
         <FaSearch size={20} />
       </button>
-    </motion.form>
+    </form>
   );
 };
 

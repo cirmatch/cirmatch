@@ -1,10 +1,9 @@
-import { motion } from "framer-motion";
 import useContactForm from "@/hooks/useContactForm";
 import { useDispatch, useSelector } from "react-redux";
 import { addmessage } from "@/config/redux/action/contactAction";
 import { reset } from "@/config/redux/reducers/authReducer";
 import { toast } from "react-hot-toast";
-import { contactFormAnimation, contactFormFields } from "@/Constants/contactValidationSchema";
+import { contactFormFields } from "@/Constants/contactValidationSchema";
 
 export default function ContactForm() {
   const dispatch = useDispatch();
@@ -29,11 +28,9 @@ export default function ContactForm() {
   };
 
   return (
-    <motion.form
+    <form
       onSubmit={handleSubmit(onSubmit)}
       className="bg-white shadow-lg rounded-xl p-6 md:w-2/3 mx-auto"
-      initial={contactFormAnimation.initial}
-      animate={contactFormAnimation.animate}
     >
       {contactFormFields.map((field) => (
         <div key={field.id} className="mb-4">
@@ -89,6 +86,6 @@ export default function ContactForm() {
       >
         {isLoading ? "Sending..." : "Send"}
       </button>
-    </motion.form>
+    </form>
   );
 }

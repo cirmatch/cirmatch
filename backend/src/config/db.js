@@ -26,10 +26,10 @@ const connectDB = async (dburl) => {
         Review.syncIndexes(),
         Contact.syncIndexes(),
       ]);
-      console.log("✅ Indexes synced (development mode)");
+      console.log("Indexes synced (development mode)");
     }
   } catch (error) {
-    console.error("❌ DB connection error:", error);
+    console.error("DB connection error:", error);
     process.exit(1);
   }
 };

@@ -1,20 +1,17 @@
 // components/Product/listingCard.jsx
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { fadeIn } from "@/utils/motion";
 
 /**
  * ListingCard Component
  * 
  * Displays individual product listing in a card format.
  * Includes image, title, description, price, quantity, and a detail button.
- * Animates on scroll using Framer Motion.
  * 
  * Props:
  * - listing: object containing listing details (title, description, price, quantity, images)
- * - index: number used for staggered animation
+ * - index: number used for layout positioning
  */
 const ListingCard = ({ listing, index, fullWidth }) => {
   // Extract quantity and unit from listing.quantity (e.g., "10 Kg" -> number=10, unit=Kg)
@@ -25,13 +22,13 @@ const ListingCard = ({ listing, index, fullWidth }) => {
   const unit = match ? match[3].toUpperCase() : ""; // Extracted unit, default empty
 
   return (
-    <motion.div
-      key={listing._id} // Unique key for Framer Motion
-      variants={fadeIn("up", index * 0.1)} // Staggered fade-in animation
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.3 }}
-      className={fullWidth ? "w-full p-2" : "w-full sm:w-[45%] md:w-[30%] lg:w-[22%] p-2"}
+    <div
+      key={listing._id}
+      className={
+        fullWidth
+          ? "w-full p-2"
+          : "w-full sm:w-[45%] md:w-[30%] lg:w-[22%] p-2"
+      }
     >
       <Link
         href={`/product/${listing._id}`}
@@ -51,11 +48,14 @@ const ListingCard = ({ listing, index, fullWidth }) => {
         {/* Product Details */}
         <div className="p-4 space-y-2">
           <h4 className="text-lg font-semibold">{listing.title}</h4>
-          <p className="text-sm text-gray-600 line-clamp-1">{listing.description}</p>
+          <p className="text-sm text-gray-600 line-clamp-1">
+            {listing.description}
+          </p>
 
           {/* Price */}
           <h5 className="text-md font-medium text-teal-600">
-            Price: <span className="text-xl font-bold">৳</span> {listing.price} / {unit || "unit"}
+            Price: <span className="text-xl font-bold">৳</span> {listing.price} /{" "}
+            {unit || "unit"}
           </h5>
 
           {/* Quantity */}
@@ -69,7 +69,7 @@ const ListingCard = ({ listing, index, fullWidth }) => {
           </button>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 };
 

@@ -1,7 +1,3 @@
-// components/Product/ProductInfo.jsx
-
-import { motion } from "framer-motion";
-import { fadeIn, textVariant } from "@/utils/motion";
 import NumberBox from "../Quantity";
 
 /**
@@ -9,7 +5,6 @@ import NumberBox from "../Quantity";
  * 
  * Displays detailed information about a single product listing.
  * Includes title, price, availability, description, specifications, quantity selection, and action buttons.
- * Uses Framer Motion for smooth animations.
  * 
  * Props:
  * - listing: object containing all product details
@@ -41,19 +36,13 @@ export function ProductInfo({
   }
 
   return (
-    <motion.div
-      variants={fadeIn("left", 0.7)}
-      className="md:w-1/2 flex flex-col justify-between text-gray-700"
-    >
+    <div className="md:w-1/2 flex flex-col justify-between text-gray-700">
       {/* Product Title */}
-      <motion.h2
-        variants={textVariant(0.8)}
-        className="text-4xl font-extrabold mb-4 tracking-wide"
-      >
+      <h2 className="text-4xl font-extrabold mb-4 tracking-wide">
         {listing?.title
           ? listing.title.charAt(0).toUpperCase() + listing.title.slice(1)
           : ""}
-      </motion.h2>
+      </h2>
 
       {/* Price */}
       <div className="text-3xl font-semibold text-teal-600 mb-3">
@@ -141,6 +130,6 @@ export function ProductInfo({
           Add to Cart
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }

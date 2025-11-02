@@ -1,7 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
 import UserLayout from "@/layout/clienLayout/UserLayout";
-import { fadeIn, staggerContainer } from "@/utils/motion"; // import your variants
 
 const PrivacyPolicy = () => {
   const sections = [
@@ -66,40 +64,25 @@ const PrivacyPolicy = () => {
   return (
     <UserLayout>
       <main className="max-w-3xl mx-auto p-8">
-        <motion.h1
-          className="text-4xl font-bold text-teal-700 mb-6"
-          variants={fadeIn("up", 0)}
-          initial="hidden"
-          animate="show"
-        >
+        <h1 className="text-4xl font-bold text-teal-700 mb-6">
           🔒 Privacy Policy
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          className="text-gray-500 mb-10"
-          variants={fadeIn("up", 0.2)}
-          initial="hidden"
-          animate="show"
-        >
+        <p className="text-gray-500 mb-10">
           Last updated: 20.07.2025
-        </motion.p>
+        </p>
 
-        <motion.div
-          variants={staggerContainer(0.3, 0.3)}
-          initial="hidden"
-          animate="show"
-        >
+        <div>
           {sections.map(({ title, content }, idx) => (
-            <motion.section
+            <section
               key={idx}
               className="bg-white shadow-md rounded-lg p-6 mb-8 border border-gray-200"
-              variants={fadeIn("up", idx * 0.2 + 0.3)}
             >
               <h2 className="text-xl font-semibold text-teal-600 mb-4">{title}</h2>
               {content}
-            </motion.section>
+            </section>
           ))}
-        </motion.div>
+        </div>
       </main>
     </UserLayout>
   );

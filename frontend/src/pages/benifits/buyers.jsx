@@ -1,38 +1,15 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { fadeIn, staggerContainer, textVariant } from "@/utils/motion";
 import UserLayout from "@/layout/clienLayout/UserLayout";
 
 const BenefitsOfBuyers = () => {
   return (
     <UserLayout>
-<motion.div
-        className="max-w-4xl mx-auto px-6 py-12 bg-white  rounded-2xl "
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-      >
-        <motion.h1
-          className="text-3xl md:text-4xl font-bold text-teal-600 mb-6 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
+      <div className="max-w-4xl mx-auto px-6 py-12 bg-white rounded-2xl">
+        <h1 className="text-3xl md:text-4xl font-bold text-teal-600 mb-6 text-center">
           Benefits of Buyers
-        </motion.h1>
+        </h1>
 
-        <motion.div
-          className="space-y-6 text-dark text-lg leading-relaxed"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: {
-              transition: {
-                staggerChildren: 0.2,
-              },
-            },
-          }}
-        >
+        <div className="space-y-6 text-dark text-lg leading-relaxed">
           {[
             "Plastic is a very complex industry and recycling plastics is way more fragmented! Each category has different types of sub-categories and then you have to find the right conditions of products that meet your needs for hassle-free production!",
             "So, as per the requirements, getting the exact materials or products is hard. It's even harder to deal with different kinds of sellers each time and every time.",
@@ -47,19 +24,10 @@ const BenefitsOfBuyers = () => {
             "It's our job to make it reach products at your production's doorstep.",
             "Cirmatch does everything to make sure buyers can focus on the other part of the business without worrying about materials, sourcing, Transportation, or quality!",
           ].map((paragraph, index) => (
-            <motion.p
-              key={index}
-              variants={{
-                hidden: { opacity: 0, x: -20 },
-                visible: { opacity: 1, x: 0 },
-              }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-            >
-              {paragraph}
-            </motion.p>
+            <p key={index}>{paragraph}</p>
           ))}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </UserLayout>
   );
 };

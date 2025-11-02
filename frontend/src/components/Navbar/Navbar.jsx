@@ -1,23 +1,16 @@
-import { useState } from 'react';
-import { FaBars, FaTimes } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
-import Logo from './Logo';
-import SearchBar from './SearchBar';
-import CartUserSection from './CartUserSection';
-import DesktopMenu from './DesktopMenu';
-import MobileMenu from './MobileMenu';
-import { navbarVariants, mobileMenuVariants } from '@/utils/motion';
+import { useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
+import Logo from "./Logo";
+import SearchBar from "./SearchBar";
+import CartUserSection from "./CartUserSection";
+import DesktopMenu from "./DesktopMenu";
+import MobileMenu from "./MobileMenu";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <motion.nav
-      className="w-full shadow-sm sticky top-0 bg-white z-50"
-      variants={navbarVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <nav className="w-full shadow-sm sticky top-0 bg-white z-50">
       {/* Top Section */}
       <div className="bg-[#f0f2f3] py-3 px-4 md:px-0">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
@@ -48,30 +41,17 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Menu */}
-      <motion.div
-        className="hidden md:block"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
+      <div className="hidden md:block">
         <DesktopMenu />
-      </motion.div>
+      </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            className="md:hidden"
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <MobileMenu />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+      {mobileMenuOpen && (
+        <div className="md:hidden">
+          <MobileMenu />
+        </div>
+      )}
+    </nav>
   );
 };
 

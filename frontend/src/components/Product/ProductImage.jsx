@@ -1,7 +1,4 @@
-// components/Product/ProductImages.jsx
-
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import Image from "next/image";
 
 /**
@@ -9,7 +6,6 @@ import Image from "next/image";
  * 
  * Displays a product's images with a main image and clickable thumbnails.
  * Supports up to 5 images. Clicking a thumbnail updates the main image.
- * Includes smooth fade-in animation for main image transitions.
  * 
  * Props:
  * - images: Array of image objects ({ path: string })
@@ -25,7 +21,7 @@ export function ProductImages({ images = [], title }) {
   }
 
   return (
-    <motion.div className="flex flex-col md:flex-row gap-4 w-full md:w-1/2">
+    <div className="flex flex-col md:flex-row gap-4 w-full md:w-1/2">
       {/* Thumbnails */}
       <div
         className="
@@ -59,21 +55,15 @@ export function ProductImages({ images = [], title }) {
 
       {/* Main Big Image */}
       <div className="relative flex-grow w-full h-[400px] md:h-[600px] min-w-0">
-        <motion.div
-          key={imgs[mainIndex].path} // Animate when main image changes
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-full h-full"
-        >
+        <div key={imgs[mainIndex].path} className="w-full h-full">
           <Image
             src={imgs[mainIndex].path}
             alt={`${title} image ${mainIndex + 1}`}
             fill
             className="object-cover rounded-lg shadow-lg"
           />
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

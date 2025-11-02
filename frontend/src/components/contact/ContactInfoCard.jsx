@@ -1,16 +1,11 @@
-import { motion } from "framer-motion";
-import { FaMapMarkerAlt} from "react-icons/fa";
+import { FaMapMarkerAlt } from "react-icons/fa";
 import { socialLinks } from "@/Constants/footerConstants";
-import { address, contactDetails, slideInLeft, slideInRight } from "@/Constants/contactValidationSchema";
+import { address, contactDetails } from "@/Constants/contactValidationSchema";
 
 export default function ContactInfoCard() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-      <motion.div
-        className="bg-white shadow-md rounded-xl p-6"
-        initial={slideInLeft.initial}
-        animate={slideInLeft.animate}
-      >
+      <div className="bg-white shadow-md rounded-xl p-6">
         <h4 className="text-xl font-semibold text-teal-600 flex items-center gap-2 mb-4">
           <FaMapMarkerAlt className="text-teal-600" />
           Address
@@ -29,13 +24,9 @@ export default function ContactInfoCard() {
             </a>
           ))}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="bg-white shadow-md rounded-xl p-6"
-        initial={slideInRight.initial}
-        animate={slideInRight.animate}
-      >
+      <div className="bg-white shadow-md rounded-xl p-6">
         <h4 className="text-xl font-semibold text-teal-600 mb-4">
           Contact Detail
         </h4>
@@ -45,7 +36,7 @@ export default function ContactInfoCard() {
             {label}
           </p>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

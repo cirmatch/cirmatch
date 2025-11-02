@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 /**
  * NumberBox Component
@@ -58,7 +57,7 @@ const NumberBox = ({
     }
   };
 
-  // Increment quantity by 0.001 (max 3 decimals)
+  // Increment quantity by 1 (max 3 decimals)
   const increment = () => {
     const newVal = Math.min(quantity + 1, effectiveMax);
     const rounded = parseFloat(newVal.toFixed(3));
@@ -66,7 +65,7 @@ const NumberBox = ({
     setInputValue(rounded.toString());
   };
 
-  // Decrement quantity by 0.001 (max 3 decimals)
+  // Decrement quantity by 1 (max 3 decimals)
   const decrement = () => {
     const newVal = Math.max(quantity - 1, 1);
     const rounded = parseFloat(newVal.toFixed(3));
@@ -75,23 +74,17 @@ const NumberBox = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 80, damping: 12 }}
-      className="flex items-center space-x-2"
-    >
+    <div className="flex items-center space-x-2">
       {/* Decrement Button */}
-      <motion.button
-        whileTap={{ scale: 0.95 }}
+      <button
         onClick={decrement}
         className="bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
       >
         –
-      </motion.button>
+      </button>
 
       {/* Quantity Input */}
-      <motion.input
+      <input
         type="text"
         value={inputValue}
         onChange={handleChange}
@@ -100,13 +93,12 @@ const NumberBox = ({
       />
 
       {/* Increment Button */}
-      <motion.button
-        whileTap={{ scale: 0.95 }}
+      <button
         onClick={increment}
         className="bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
       >
         +
-      </motion.button>
+      </button>
 
       {/* Unit: dropdown if disabled, else display */}
       {disabled ? (
@@ -121,7 +113,7 @@ const NumberBox = ({
       ) : (
         <span className="px-3 py-1 border rounded-md text-gray-700">{unit}</span>
       )}
-    </motion.div>
+    </div>
   );
 };
 

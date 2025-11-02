@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import {  useEffect, useState } from 'react';
-import { categories, navLinks } from '../../Constants/navLinks';
-import { FaBars, FaShoppingCart, FaUser } from 'react-icons/fa';
-import ButtonLink from '../Button/button';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { logoutUser } from '@/config/redux/action/authAction';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { categories, navLinks } from "../../Constants/navLinks";
+import { FaBars, FaShoppingCart, FaUser } from "react-icons/fa";
+import ButtonLink from "../Button/button";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { logoutUser } from "@/config/redux/action/authAction";
 
 const MobileMenu = () => {
   const router = useRouter();
@@ -15,36 +15,35 @@ const MobileMenu = () => {
   const { loggedIn, user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    dispatch(logoutUser()); 
-    router.push("/auth"); 
+    dispatch(logoutUser());
+    router.push("/auth");
   };
-  
-useEffect(() => {
-  // Check if user exists AND user object is fully loaded (isVerified !== undefined)
-  if (user && typeof user.isVerified !== "undefined" && !user.isVerified) {
-    handleLogout();
-  }
-}, [user]);
 
-    const filteredLinks = navLinks.filter(link => {
+  useEffect(() => {
+    // Check if user exists AND user object is fully loaded (isVerified !== undefined)
+    if (user && typeof user.isVerified !== "undefined" && !user.isVerified) {
+      handleLogout();
+    }
+  }, [user]);
+
+  const filteredLinks = navLinks.filter((link) => {
     if (link.adminOnly && (!user || user.role !== "admin")) {
       return false;
     }
     return true;
   });
-  
+
   return (
     <div className="md:hidden bg-white border-t border-gray-200 shadow-lg px-4 py-6 h-screen overflow-y-auto">
-
       {/* Categories Dropdown */}
-      
+
       <div className="mb-6">
         <button
           onClick={() => setCategoriesOpen(!categoriesOpen)}
           className="flex items-center gap-2 font-semibold capitalize text-gray-800"
           aria-expanded={categoriesOpen}
         >
-          <FaBars /> All Categories 
+          <FaBars /> All Categories
         </button>
 
         {categoriesOpen && (
@@ -68,8 +67,8 @@ useEffect(() => {
             href={href}
             className={`font-medium text-base capitalize ${
               currentPath === href
-                ? 'text-teal-500 font-semibold'
-                : 'text-gray-700 hover:text-teal-500'
+                ? "text-teal-500 font-semibold"
+                : "text-gray-700 hover:text-teal-500"
             }`}
           >
             {label}

@@ -3,13 +3,11 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { motion } from "framer-motion";
 
 import UserLayout from "@/layout/clienLayout/UserLayout";
 import ListingCard from "@/components/Product/listingCard";
 import Loading from "@/components/Loading";
 import { searchProduct } from "@/config/redux/action/productAction";
-import { textVariant, fadeIn } from "@/utils/motion";
 import ErrorPage from "../404";
 
 /**
@@ -17,7 +15,7 @@ import ErrorPage from "../404";
  * 
  * Displays search results based on user query.
  * Shows loading indicator while fetching, handles empty or invalid queries,
- * and displays results with animated listing cards.
+ * and displays results without animation.
  */
 const SearchPage = () => {
   const router = useRouter();
@@ -60,12 +58,12 @@ const SearchPage = () => {
   // Show message if no products match the search query
   if (!isLoading && searchListings.length === 0) {
     return (
-        <ErrorPage
-          code="404"
-          message={`No products found for "${q}"`}
-          buttonText="Go Back To Product Page"
-          buttonLink="/product"
-        />
+      <ErrorPage
+        code="404"
+        message={`No products found for "${q}"`}
+        buttonText="Go Back To Product Page"
+        buttonLink="/product"
+      />
     );
   }
 
@@ -73,14 +71,9 @@ const SearchPage = () => {
     <UserLayout>
       <div className="container mx-auto px-4 py-10">
         {/* Search Results Title */}
-        <motion.h3
-          variants={textVariant()}
-          initial="hidden"
-          whileInView="show"
-          className="text-3xl font-bold text-teal-600 mb-6"
-        >
+        <h3 className="text-3xl font-bold text-teal-600 mb-6">
           Showing Results for "{q}"
-        </motion.h3>
+        </h3>
 
         <hr className="mb-8 border-gray-300" />
 
@@ -90,10 +83,9 @@ const SearchPage = () => {
             .filter((listing) => listing.Status === "confirmed") // Only confirmed listings
             .map((listing, index) => (
               <ListingCard
-                key={listing._id}           // Unique key for each card
-                listing={listing}           // Pass listing data
-                index={index}               // Index for staggered animation
-                variants={fadeIn("up", index * 0.1)} // Fade-in animation
+                key={listing._id} 
+                listing={listing} // Pass listing data
+                index={index} // Keep index prop (for future use if needed)
               />
             ))}
         </div>
