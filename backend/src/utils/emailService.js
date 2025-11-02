@@ -1,104 +1,17 @@
 import nodemailer from "nodemailer";
 import axios from "axios";
 import dotenv from "dotenv";
+import { getVerificationEmailHtml } from "./verificationHtmlLayout.js";
 dotenv.config({ path: "../../.env" });
 
 export const sendVerificationEmail = async (toEmail, code) => {
-  const verificationEmailHtml = `
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Cirmatch Email Verification</title>
-</head>
-<body style="margin:0; padding:0; background-color:#f4f7f8;">
-  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-    <tr>
-      <td align="center" style="padding:30px 10px;">
-        <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px; background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.06);">
-          <!-- Header -->
-          <tr>
-            <td style="background:linear-gradient(90deg,#0ea5a4,#008080); padding:20px 24px; color:#ffffff; text-align:left;">
-              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                <tr>
-                  <td style="vertical-align:middle;">
-                    <!-- Logo area (replace with <img> if you have a hosted logo) -->
-                    <div style="font-family:Arial, sans-serif; font-size:20px; font-weight:700;">
-                      Cirmatch
-                    </div>
-                    <div style="font-family:Arial, sans-serif; font-size:12px; opacity:0.95; margin-top:4px;">
-                      Support Team
-                    </div>
-                  </td>
-                  <td style="vertical-align:middle; text-align:right;">
-                    <!-- small brand accent or icon -->
-                    <div style="width:48px; height:48px; border-radius:8px; background:rgba(255,255,255,0.12); display:inline-block;"></div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+  const htmlContent = getVerificationEmailHtml(code);
 
-          <!-- Body -->
-          <tr>
-            <td style="padding:28px 28px 18px 28px; font-family:Arial, sans-serif; color:#333333;">
-              <h1 style="margin:0 0 12px 0; font-size:20px; font-weight:700; color:#073642;">ইমেইল ভেরিফিকেশন কোড</h1>
-              <p style="margin:0 0 18px 0; font-size:14px; line-height:1.5; color:#515151;">
-                হ্যালো, <br>
-                Cirmatch-এ সাইন-আপ বা ইমেইল যাচাই করার জন্য নিচের কোডটি ব্যবহার করুন। কোডটি ১০ মিনিট সময়ের মধ্যে ইস্যু হয়ে যাবে।
-              </p>
-
-              <!-- Code box -->
-              <div style="margin:18px 0; text-align:center;">
-                <div style="display:inline-block; padding:16px 22px; border-radius:8px; background:#e6fffb; border:1px solid #c7f3ef; font-family: 'Courier New', monospace; font-size:28px; letter-spacing:4px; color:#006e6e;">
-                  <strong>${code}</strong>
-                </div>
-              </div>
-
-              <!-- CTA -->
-              <p style="margin:0 0 22px 0; text-align:center;">
-                <a href="#" style="text-decoration:none; display:inline-block; padding:12px 24px; border-radius:6px; background:linear-gradient(90deg,#008080,#06b2ac); color:#ffffff; font-weight:600; font-size:14px;">
-                  কোড কপি করুন
-                </a>
-              </p>
-
-              <p style="margin:0; font-size:13px; color:#6b6b6b;">
-                যদি আপনি এই অনুরোধটি জানেন না, তাহলে নিরাপত্তার স্বার্থে আপনি এই ইমেইলটি উপেক্ষা করতে পারেন। আরও সহায়তার জন্য আমাদের সাপোর্ট টিমকে জানাবেন।
-              </p>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="padding:18px 28px; background:#f7faf9; text-align:center; font-family:Arial, sans-serif; font-size:12px; color:#8a8a8a;">
-              <div style="margin-bottom:6px;">Cirmatch • Building a greener tomorrow</div>
-              <div>© ${new Date().getFullYear()} Cirmatch. All rights reserved.</div>
-              <div style="margin-top:8px;">If you didn't request this verification, no action is required.</div>
-            </td>
-          </tr>
-        </table>
-
-        <!-- Small help text under card -->
-        <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px; margin-top:12px;">
-          <tr>
-            <td style="text-align:center; font-family:Arial, sans-serif; font-size:12px; color:#9aa0a6;">
-              If you need help, reply to this email or contact support@cirmatch.example
-            </td>
-          </tr>
-        </table>
-
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-`;
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER, 
-      pass: process.env.EMAIL_PASS, 
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
@@ -106,10 +19,116 @@ export const sendVerificationEmail = async (toEmail, code) => {
     from: `"Cirmatch Support" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: "Cirmatch Email Verification",
-    html: verificationEmailHtml,
+    html: htmlContent,
   };
 
   await transporter.sendMail(mailOptions);
+};
+
+/**
+ * Helper: Send Email with Crimatch style
+ */
+export const sendEmail = async (toEmail, subject, message) => {
+  try {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${subject}</title>
+        <style>
+          body {
+            margin: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f4f8f8;
+          }
+          .container {
+            max-width: 650px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+          }
+          .header {
+            background-color: #009688;
+            padding: 25px;
+            text-align: center;
+            color: #ffffff;
+          }
+          .header h2 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+          }
+          .content {
+            padding: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333333;
+          }
+          .content p {
+            margin: 10px 0;
+          }
+          .footer {
+            background-color: #f4f4f4;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+          }
+          .btn {
+            display: inline-block;
+            background-color: #00bfa5;
+            color: #fff;
+            padding: 10px 18px;
+            margin-top: 15px;
+            border-radius: 6px;
+            text-decoration: none;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h2>${subject}</h2>
+          </div>
+          <div class="content">
+            <p>${message}</p>
+            <p>Best Regards,<br/><strong>Crimatch Team</strong></p>
+          </div>
+          <div class="footer">
+            &copy; ${new Date().getFullYear()} Crimatch. All rights reserved.
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Email options
+    const mailOptions = {
+      from: `"Crimatch Support" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      subject: subject,
+      html: htmlContent,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Email sent successfully to ${toEmail}`);
+  } catch (error) {
+    console.error("❌ Error sending email:", error);
+    throw error;
+  }
 };
 
 

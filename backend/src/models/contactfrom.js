@@ -11,7 +11,11 @@ const contactSchema = new Schema({
   message: {
     type: String,
     required: true,
-},
+  },
+  replied: {
+    type: Boolean,
+    default: false
+  },
   user: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', 

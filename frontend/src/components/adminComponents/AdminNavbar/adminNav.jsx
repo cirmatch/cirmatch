@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FiMenu, FiX, FiHome, FiBox, FiUsers, FiSettings, FiInbox, FiArrowRight } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiBox, FiUsers, FiInbox, FiArrowRight, FiMessageCircle } from 'react-icons/fi';
 import Logo from '../../Navbar/Logo';
 
 
@@ -9,11 +9,11 @@ export default function Sidebar() {
 
   const navItems = [
     { name: 'Dashboard', icon: <FiHome />, href: '/adminDashboard' },
-    { name: 'Products', icon: <FiBox />, href: '/adminDashboard/products' },
     { name: 'Users', icon: <FiUsers />, href: '/adminDashboard/user' },
+    { name: 'Products', icon: <FiBox />, href: '/adminDashboard/products' },
     { name: 'Orders', icon: <FiInbox />, href: '/adminDashboard/orders' },
+    { name: 'Contacts', icon: <FiMessageCircle  />, href: '/adminDashboard/contacts' },
     { name: 'Main Page', icon: <FiArrowRight />, href: '/' },
-    // { name: 'Settings', icon: <FiSettings  />, href: '/adminDashboard/setting' },
   ];
 
   return (
