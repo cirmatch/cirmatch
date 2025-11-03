@@ -1,6 +1,6 @@
-Crimatch :
+Cirmatch :
 
-Crimatch is a fullstack recycling B2B marketplace where users can buy and sell recyclable materials like PET, LDPE, and HDPE. The platform supports secure authentication, product management, and admin controls.
+Cirmatch is a fullstack recycling B2B marketplace where users can buy and sell recyclable materials like PET, LDPE, and HDPE. The platform supports secure authentication, product management, and admin controls.
 
 Features :
 
