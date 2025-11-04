@@ -48,7 +48,7 @@ export default function Home() {
           property="og:description"
           content="Join the future of recycling. Cirmatch helps you buy and sell plastic waste materials like PET, HDPE, LDPE, and more."
         />
-        <meta property="og:image" content="/banner.jpg" />
+        <meta property="og:image" content="https://res.cloudinary.com/cirmatchcloudmizan/image/upload/v1762246287/hero_upn2ix.jpg" />
         <meta property="og:url" content="https://cirmatch.com" />
         <meta property="og:type" content="website" />
       </Head>

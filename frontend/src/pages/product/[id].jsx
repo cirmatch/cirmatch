@@ -15,6 +15,7 @@ import { ProductInfo } from "@/components/Product/ProductInfo";
 import { ProductImages } from "@/components/Product/ProductImage";
 
 import ErrorPage from "../404";
+import Head from "next/head";
 
 /**
  * SingleProductDetail Component
@@ -87,6 +88,27 @@ const SingleProductDetail = () => {
 
   return (
     <UserLayout>
+      <Head>
+        <title>{listing?.title} - Cirmatch</title>
+        <meta
+          name="description"
+          content={listing?.description}
+        />
+        <meta name="google-site-verification" content="bkTnSrE-c5TY3xDcN_zJC62LuSsvnNrRuP_IGkQ9Qfw" />
+        <meta
+          name="keywords"
+          content="Cirmatch, recycling, PET, LDPE, HDPE, PP, waste management, eco-friendly, green tech, sustainable materials"
+        />
+        <meta name="author" content="Cirmatch Team" />
+        <meta property="og:title" content={listing?.title} />
+        <meta
+          property="og:description"
+          content={listing.description}
+        />
+        <meta property="og:image" content={listing.images[0]?.path } />
+        <meta property="og:url" content={`https://cirmatch.com/product/${listing?._id}`} />
+        <meta property="og:type" content="website" />
+      </Head>
       <div className="container mx-auto px-4 py-12">
         {/* Product Images and Info Section */}
         <div className="flex flex-col md:flex-row gap-12">
