@@ -39,7 +39,6 @@ const listingSchema = new Schema(
     // Sourcing condition of the plastic
     sourcingCondition: {
       type: String,
-      enum: ["Post Consumer", "Post Industrial", "Mixed"],
       required: false,
     },
 
@@ -49,7 +48,6 @@ const listingSchema = new Schema(
     // Washing process applied to the plastic
     washingProcess: {
       type: String,
-      enum: ["Cold Wash", "Hot Wash", "Unwashed"],
       required: false,
     },
 

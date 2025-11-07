@@ -11,7 +11,7 @@ const router = express.Router();
 // ================= USER ROUTES =================
 
 // Create new order (user must be authenticated)
-router.post('/newOrder', authenticate,  wrapAsync(createOrder));
+router.post('/newOrder', authenticate,ordervalidate(createOrderSchema),  wrapAsync(createOrder));
 
 // Get all my orders for logged-in user
 router.get('/myOrders', authenticate, wrapAsync(getUserOrders));
