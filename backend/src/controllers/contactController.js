@@ -70,3 +70,10 @@ export const replyContact = async (req, res) => {
 
     return res.status(200).json({ message: "Reply email sent successfully" });
 };
+
+export const deleteContact =async (req, res) => {
+  const { contactId } = req.params;
+  if (!contactId) return res.status(httpStatus.NOT_FOUND).json({ message: "Contact not found" });
+  await Contact.findByIdAndDelete(contactId);
+  res.status(httpStatus.OK).json({ message: "Contact Deleted Successfully" });
+}

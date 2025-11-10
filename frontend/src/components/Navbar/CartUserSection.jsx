@@ -6,15 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const CartUserSection = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { loggedIn, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const { loggedIn} = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart );
-
-  const handleLogout = () => {
-    localStorage.clear();
-    dispatch(reset());
-    setUserMenuOpen(false);
-  };
 
   return (
     <div className="hidden md:flex items-center justify-end gap-4">

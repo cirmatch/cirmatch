@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addmessage, getContact, replyContact } from "../../action/contactAction";
+import { addmessage, deleteContact, getContact, replyContact } from "../../action/contactAction";
 
 
 const initialState = {
@@ -53,6 +53,20 @@ const contactSlice = createSlice({
         state.message = "Message sent Successfully";
       })
       .addCase(replyContact.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deleteContact.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.AllContact = state.AllContact.filter(contact => contact._id !== action.meta.arg);
+        state.message = action.payload.message;
+      })
+      .addCase(deleteContact.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

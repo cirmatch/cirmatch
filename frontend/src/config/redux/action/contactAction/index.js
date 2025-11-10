@@ -41,3 +41,16 @@ export const replyContact = createAsyncThunk(
     }
   }
 );
+
+export const deleteContact = createAsyncThunk(
+  "product/deleteContact",
+  async (contactId, thunkApi) => {
+    try {
+      const response = await client.delete(`/delete-contact/${contactId}`);
+      return thunkApi.fulfillWithValue(response.data);
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+)

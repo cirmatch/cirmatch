@@ -1,9 +1,9 @@
 import useContactForm from "@/hooks/useContactForm";
 import { useDispatch, useSelector } from "react-redux";
 import { addmessage } from "@/config/redux/action/contactAction";
-import { reset } from "@/config/redux/reducers/authReducer";
 import { toast } from "react-hot-toast";
 import { contactFormFields } from "@/Constants/contactValidationSchema";
+import { reset } from "@/config/redux/reducers/contactReducer";
 
 export default function ContactForm() {
   const dispatch = useDispatch();
@@ -21,7 +21,9 @@ export default function ContactForm() {
       await dispatch(addmessage(data)).unwrap();
       toast.success("Message sent successfully!");
       resetForm();
-      dispatch(reset());
+      setTimeout(() => {
+        dispatch(reset());
+      }, 2000); // 10,000 ms = 10 seconds
     } catch (error) {
       toast.error(error || "Failed to send message.");
     }

@@ -17,7 +17,6 @@ const ALLOWED_STATUSES = ["pending", "confirmed", "cancelled", "out_of_stock"];
   @param {string} productId - Listing ID from req.params
  */
 export const deleteProduct = async (req, res) => {
-  try {
     const listing = await Listing.findById(req.params.productId);
     if (!listing) {
       return res.status(httpStatus.NOT_FOUND).json({ message: "Listing not found" });
@@ -39,10 +38,6 @@ export const deleteProduct = async (req, res) => {
     await Listing.findByIdAndDelete(req.params.productId);
 
     res.status(httpStatus.OK).json({ message: "Listing and associated Cloudinary files deleted successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
-  }
 };
 
 /*
