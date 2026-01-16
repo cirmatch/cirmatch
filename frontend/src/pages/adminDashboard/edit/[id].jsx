@@ -123,7 +123,7 @@ const EditListingPage = () => {
     if (!formData.sellername) return "Seller Name is required";
     if (!formData.description) return "Description is required";
     if (!formData.plastictype) return "Plastic type is required";
-    if (!formData.metarialtype) return "Material type is required";
+
     if (!formData.location) return "Location is required";
     if (!formData.price || isNaN(formData.price) || formData.price <= 0)
       return "Price must be positive";
